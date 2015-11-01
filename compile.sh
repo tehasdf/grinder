@@ -1,0 +1,1 @@
+watchify -t babelify src/main.js -o compiled.js
