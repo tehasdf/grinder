@@ -1,9 +1,6 @@
 import gaussian from 'gaussian';
 
 
-var d3;
-
-
 function normal(mean, std){
     var _distribution = gaussian(mean, std);
     return _distribution.ppf(Math.random());
@@ -36,7 +33,7 @@ function effectiveWithItem(skill, ql, bonus){
 
     if (bonus > 0){
         linearMax = (100 + bonusSkill) / 2;
-        diffToMaxChange = Math.min(bonusSkill, linearMax - bonusSkill);
+        var diffToMaxChange = Math.min(bonusSkill, linearMax - bonusSkill);
         var newBon = diffToMaxChange * bonus / 100;
         bonusSkill += newBon;
     }
@@ -78,19 +75,66 @@ function rollGaussian(skill, difficulty){
 }
 
 
-function getData({count, skill, difficulty, bonus}){
-    var rolls = {};
-    [count, skill, difficulty, bonus].map((d, i) => {
-        if (typeof(d) !== 'number'){
-            throw new Error(`${d} is not a number (${i})`);
+const calculator = {
+    fixed({skill, difficulty, bonus}){
+        var effective = effectiveSkill(skill, bonus);
+        return rollGaussian(effective, difficulty);
+    },
+
+    mining({skill, difficulty, pick_ql, pick_skill}){
+        // TODO cavetilebehaviour.java:445, add imbue
+        var effective_pick_skill = effectiveWithItem(pick_skill, pick_ql, 0);
+        var bonus = rollGaussian(effective_pick_skill, difficulty) / 5;
+        var effective_mining = effectiveWithItem(skill, pick_ql, bonus);
+        var power = rollGaussian(effective_mining, difficulty);
+        return power;
+    },
+
+    farming({skill, difficulty, rake_ql, rake_skill, nature_skill}){
+        var effective_rake_skill = effectiveWithItem(rake_skill, rake_ql, 0);
+        var bonus = rollGaussian(effective_rake_skill, difficulty) / 10;
+
+        var nature_bonus = rollGaussian(nature_skill, difficulty) / 10;
+        bonus += Math.max(0, nature_bonus);
+
+        var effective_farming = effectiveWithItem(skill, rake_ql, bonus);
+        var power = rollGaussian(effective_farming, difficulty);
+        return power
+    },
+
+    digging({skill, difficulty, digging_slope, shovel_ql}){
+        difficulty += (1 + digging_slope / 5);
+
+        var effective_digging = effectiveWithItem(skill, shovel_ql, 0);
+        var power = rollGaussian(effective_digging, difficulty);
+        return power;
+
+    },
+
+    meditation({skill, rug_ql, path_level, medi_cooldown}){
+        var difficulty;
+        if (medi_cooldown){
+            difficulty = 10;
+        } else {
+            if (((path_level * 10 - skill) > 30) && skill <= 90) {
+                difficulty = (1 + path_level * 3);
+            } else {
+                difficulty = (1 + path_level * 10);
+            }
         }
-    });
+        var effective_medi_skill = effectiveWithItem(skill, rug_ql, 0);
+        return rollGaussian(effective_medi_skill, difficulty);
+    }
+}
 
 
-    var effective = effectiveSkill(skill, bonus);
+function getData({kind, count, params}){
+    var rolls = {};
+    var handler = calculator[kind];
+
     setProgress(0);
     for (let i = 0; i < count; i++){
-        let power = rollGaussian(effective, difficulty);
+        let power = handler(params);
         if (i % 1000 === 0){
             setProgress(i / count);
         }
@@ -113,6 +157,7 @@ function getData({count, skill, difficulty, bonus}){
 function setProgress(progress){
     postMessage({message: 'progress', progress})
 }
+
 onmessage = function (evt){
     var result = getData(evt.data);
     postMessage({message: 'data', data: result});

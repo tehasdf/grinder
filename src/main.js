@@ -1,4 +1,10 @@
 
+const React = window.React;
+const ReactDOM = window.ReactDOM;
+
+console.log('elo', window)
+const {Grid, Row, Col, Input, ProgressBar} = window.ReactBootstrap;
+import Reflux from 'reflux';
 
 
 
@@ -113,17 +119,23 @@ function drawTheGraph(el, data){
 
 
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {Grid, Row, Col, Input} from 'react-bootstrap';
-import Reflux from 'reflux';
 
 
 const ParamsActions = Reflux.createActions([
     'setDifficulty',
     'setSkill',
     'setBonus',
-    'setCount'
+    'setCount',
+    'setPickQl',
+    'setPickSkill',
+    'setRakeSkill',
+    'setRakeQl',
+    'setNatureSkill',
+    'setShovelQl',
+    'setDiggingSlope',
+    'setRugQl',
+    'setPathLevel',
+    'setMediCooldown'
 ]);
 
 const recalcAction = Reflux.createAction();
@@ -141,37 +153,6 @@ const countStore = Reflux.createStore({
     }
 });
 
-const difficultyStore = Reflux.createStore({
-    listenables: ParamsActions,
-    onSetDifficulty(count){
-        this.trigger(count)
-    },
-    getInitialState(){
-        return 60
-    }
-});
-
-
-const bonusStore = Reflux.createStore({
-    listenables: ParamsActions,
-    onSetBonus(count){
-        this.trigger(count)
-    },
-    getInitialState(){
-        return 70
-    }
-});
-
-
-const skillStore = Reflux.createStore({
-    listenables: ParamsActions,
-    onSetSkill(count){
-        this.trigger(count)
-    },
-    getInitialState(){
-        return 90
-    }
-});
 const kindStore = Reflux.createStore({
     init(){
         this.listenTo(setKind, this.onSetKind);
@@ -184,6 +165,52 @@ const kindStore = Reflux.createStore({
     }
 });
 
+
+const paramsStore = Reflux.createStore({
+    init(){
+        this.params = {
+            skill: 90,
+            bonus: 70,
+            difficulty: 60,
+            pick_skill: 90,
+            pick_ql: 90,
+            rake_ql: 90,
+            rake_skill: 90,
+            nature_skill: 60,
+            shovel_ql: 90,
+            digging_slope: 0,
+            rug_ql: 5,
+            path_level: 11,
+            medi_cooldown: 0
+        };
+        var setParam = key => value => {
+            this.params[key] = value
+            this.trigger(this.params);
+        };
+
+        [
+            {action: ParamsActions.setDifficulty, key: 'difficulty'},
+            {action: ParamsActions.setSkill, key: 'skill'},
+            {action: ParamsActions.setBonus, key: 'bonus'},
+            {action: ParamsActions.setPickSkill, key: 'pick_skill'},
+            {action: ParamsActions.setPickQl, key: 'pick_ql'},
+            {action: ParamsActions.setRakeQl, key: 'rake_ql'},
+            {action: ParamsActions.setRakeSkill, key: 'rake_skill'},
+            {action: ParamsActions.setNatureSkill, key: 'nature_skill'},
+            {action: ParamsActions.setShovelQl, key: 'shovel_ql'},
+            {action: ParamsActions.setDiggingSlope, key: 'digging_slope'},
+            {action: ParamsActions.setPathLevel, key: 'path_level'},
+            {action: ParamsActions.setRugQl, key: 'rug_ql'},
+            {action: ParamsActions.setMediCooldown, key: 'medi_cooldown'},
+        ].map(({action, key}) => {
+            this.listenTo(action, setParam(key), setParam(key))
+        });
+    },
+
+    getInitialState(){
+        return this.params;
+    }
+})
 
 const setProgress = Reflux.createAction();
 const gotData = Reflux.createAction();
@@ -204,19 +231,23 @@ const progressStore = Reflux.createStore({
 const graphDataStore = Reflux.createStore({
     init(){
         this.params = {};
-        var setter = key => value => this.params[key] = value;
+        this.count = 10000;
+        this.kind = 'fixed';
 
-        this.listenTo(skillStore, setter('skill'), setter('skill'));
-        this.listenTo(bonusStore, setter('bonus'), setter('bonus'));
-        this.listenTo(difficultyStore, setter('difficulty'), setter('difficulty'));
+        var setter = key => value => this[key] = value;
+        var setParam = key => value => this.params[key] = value;
+
+        this.listenTo(kindStore, setter('kind'), setter('kind'));
         this.listenTo(countStore, setter('count'), setter('count'));
+
+        this.listenTo(paramsStore, setter('params'), setter('params'));
 
         this.listenTo(recalcAction, this.recalc);
         this.listenTo(gotData, this._gotData);
     },
 
     recalc(){
-        worker.postMessage(this.params);
+        worker.postMessage({count: this.count, kind: this.kind, params: this.params});
     },
 
     _gotData(data){
@@ -269,9 +300,7 @@ function eventAction(action){
 
 const Inputs = React.createClass({
     mixins: [
-        Reflux.connect(difficultyStore, 'difficulty'),
-        Reflux.connect(skillStore, 'skill'),
-        Reflux.connect(bonusStore, 'bonus')
+        Reflux.connect(paramsStore)
     ],
 
     onSubmit(evt){
@@ -282,20 +311,8 @@ const Inputs = React.createClass({
     render(){
         return <form onSubmit={this.onSubmit}>
             <Row>
-                <Col md={3}>
-
-                </Col>
-
-            </Row>
-            <Row>
                 <Col md={2}>
-                    <Input
-                        type="text"
-                        label="Skill"
-                        ref="skill"
-                        value={this.state.skill}
-                        onChange={eventAction(ParamsActions.setSkill)}
-                    />
+                    <SkillInput skill={this.state.skill} />
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <Input
@@ -326,12 +343,21 @@ const Inputs = React.createClass({
     }
 });
 
+const SkillInput = React.createClass({
+    render(){
+        return <Input
+            type="text"
+            label={this.props.label || "Skill"}
+            ref="skill"
+            value={this.props.skill}
+            onChange={eventAction(ParamsActions.setSkill)}
+        />
+    }
+});
 
 const MiningInputs = React.createClass({
     mixins: [
-        Reflux.connect(difficultyStore, 'difficulty'),
-        Reflux.connect(skillStore, 'skill'),
-        Reflux.connect(bonusStore, 'bonus')
+        Reflux.connect(paramsStore)
     ],
 
     onSubmit(evt){
@@ -342,37 +368,116 @@ const MiningInputs = React.createClass({
     render(){
         return <form onSubmit={this.onSubmit}>
             <Row>
-                <Col md={3}>
+                <Col md={2}>
+                    <SkillInput label="Mining skill" skill={this.state.skill} />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="number"
+                        label="Pickaxe ql"
+                        value={this.state.pick_ql}
+                        onChange={eventAction(ParamsActions.setPickQl)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="number"
+                        label="Pickaxe skill"
+                        value={this.state.pick_skill}
+                        onChange={eventAction(ParamsActions.setPickSkill)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="select"
+                        label="vein difficulty"
+                        ref="bonus"
+                        value={this.state.difficulty}
+                        onChange={eventAction(ParamsActions.setDifficulty)}
+                    >
+                        <option value="2">2 (Rock/zinc)</option>
+                        <option value="3">3 (Iron)</option>
+                        <option value="10">10 (Tin)</option>
+                        <option value="20">20 (Copper/slate/lead)</option>
+                        <option value="35">35 (Silver)</option>
+                        <option value="40">40 (Gold/reinforced/marble)</option>
+                        <option value="55">55 (Glimmersteel)</option>
+                        <option value="60">60 (Adamantine)</option>
+                    </Input>
+                </Col>
+            </Row>
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
 
+
+const FarmingInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore)
+    ],
+
+    onSubmit(evt){
+        recalcAction();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Farming skill" skill={this.state.skill} />
                 </Col>
 
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="number"
+                        label="Nature skill"
+                        value={this.state.nature_skill}
+                        onChange={eventAction(ParamsActions.setNatureSkill)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="select"
+                        label="crop difficulty"
+                        ref="bonus"
+                        value={this.state.difficulty}
+                        onChange={eventAction(ParamsActions.setDifficulty)}
+                    >
+                        <option value="4">4 (Potato)</option>
+                        <option value="7">7 (Cotton)</option>
+                        <option value="10">10 (Wemp/rye)</option>
+                        <option value="15">15 (Oat/pumpkin)</option>
+                        <option value="20">20 (Reed/barley)</option>
+                        <option value="30">30 (Wheat)</option>
+                        <option value="40">40 (Corn)</option>
+                        <option value="60">60 (Onion/strawberries)</option>
+                        <option value="70">70 (Garlic)</option>
+                        <option value="80">80 (Rice)</option>
+                    </Input>
+                </Col>
             </Row>
             <Row>
                 <Col md={2}>
                     <Input
-                        type="text"
-                        label="Skill"
-                        ref="skill"
-                        value={this.state.skill}
-                        onChange={eventAction(ParamsActions.setSkill)}
+                        type="number"
+                        label="Rake ql"
+                        value={this.state.rake_ql}
+                        onChange={eventAction(ParamsActions.setRakeQl)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <Input
                         type="number"
-                        label="Difficulty"
-                        ref="difficulty"
-                        value={this.state.difficulty}
-                        onChange={eventAction(ParamsActions.setDifficulty)}
-                    />
-                </Col>
-                <Col mdOffset={1} md={2}>
-                    <Input
-                        type="number"
-                        label="vein kind"
-                        ref="bonus"
-                        value={this.state.bonus}
-                        onChange={eventAction(ParamsActions.setBonus)}
+                        label="Rake skill"
+                        value={this.state.rake_skill}
+                        onChange={eventAction(ParamsActions.setRakeSkill)}
                     />
                 </Col>
             </Row>
@@ -386,6 +491,118 @@ const MiningInputs = React.createClass({
     }
 });
 
+const DiggingInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore)
+    ],
+
+    onSubmit(evt){
+        recalcAction();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Digging skill" skill={this.state.skill} />
+                </Col>
+
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="number"
+                        label="Shovel ql"
+                        value={this.state.shovel_ql}
+                        onChange={eventAction(ParamsActions.setShovelQl)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="number"
+                        label="Slope"
+                        value={this.state.digging_slope}
+                        onChange={eventAction(ParamsActions.setDiggingSlope)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="select"
+                        label="Tile difficulty"
+                        ref="bonus"
+                        value={this.state.difficulty}
+                        onChange={eventAction(ParamsActions.setDifficulty)}
+                    >
+                        <option value="0">0 (Dirt)</option>
+                        <option value="10">10 (Sand/moss)</option>
+                        <option value="20">20 (Clay/tundra)</option>
+                        <option value="30">30 (Marsh)</option>
+                        <option value="35">35 (Tar)</option>
+                        <option value="40">40 (Steppe)</option>
+
+                    </Input>
+                </Col>
+            </Row>
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
+
+const MeditationInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore)
+    ],
+
+    onSubmit(evt){
+        recalcAction();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Meditating skill" skill={this.state.skill} />
+                </Col>
+
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="number"
+                        label="Rug ql"
+                        value={this.state.rug_ql}
+                        onChange={eventAction(ParamsActions.setRugQl)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="number"
+                        label="Level on path"
+                        value={this.state.path_level}
+                        onChange={eventAction(ParamsActions.setPathLevel)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="checkbox"
+                        label="Has level up cooldown?"
+                        value={this.state.medi_cooldown}
+                        onChange={evt => ParamsActions.setMediCooldown(evt.target.checked)}
+                    />
+                </Col>
+            </Row>
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
 function formatFreqCount({freq, count}){
     return <dd>{Math.round(10000 * freq) / 100}% ({count})</dd>
 }
@@ -397,29 +614,30 @@ const Stats = React.createClass({
     ],
 
     render(){
-        var children = [];
-
-        if (this.state.stats && this.state.stats.skillgain){
-            children.push(<dt>Skillgain</dt>);
-            children.push(formatFreqCount(this.state.stats.skillgain));
-        }
-        if (this.state.stats && this.state.stats.top){
-            children.push(<dt>90+</dt>);
-            children.push(formatFreqCount(this.state.stats.top));
-        }
-        if (this.state.stats && this.state.stats.mean){
-            children.push(<dt>Mean</dt>);
-            children.push(<dd>{Math.round(100 * this.state.stats.mean)/100}</dd>);
-        }
-        if (this.state.brush){
-            let [a, b] = this.state.brush;
-            children.push(
-                <dt>Selected {Math.round(a)} - {Math.round(b)}</dt>
-            )
-            children.push(formatFreqCount(this.state.stats.selected))
-        }
         return <div className="well"><dl className='dl-horizontal'>
-            {children}
+            {
+                (this.state.stats && this.state.stats.skillgain)
+                ? <div><dt>skillgain</dt>{formatFreqCount(this.state.stats.skillgain)}</div>
+                : null
+            }
+            {
+                (this.state.stats && this.state.stats.top)
+                ? <div><dt>90+</dt>{formatFreqCount(this.state.stats.top)}</div>
+                : null
+            }
+            {
+                (this.state.stats && this.state.stats.mean)
+                ? <div><dt>Mean</dt><dd>{Math.round(100 * this.state.stats.mean)/100}</dd></div>
+                : null
+            }
+            {
+                (this.state.brush)
+                ? <div>
+                    <dt>Selected {Math.round(this.state.brush[0])} - {Math.round(this.state.brush[1])}</dt>
+                    {formatFreqCount(this.state.stats.selected)}
+                </div>
+                : null
+            }
         </dl></div>
     }
 });
@@ -498,19 +716,10 @@ const Graph = React.createClass({
     mixins: [
         Reflux.connect(graphDataStore, 'data')
     ],
-    componentDidMount(){
-        var el = ReactDOM.findDOMNode(this);
-        // barGraph.init(el, {}, this.state.data);
-    },
 
     componentDidUpdate(){
         var el = ReactDOM.findDOMNode(this);
         drawTheGraph(el, this.state.data);
-    },
-
-    componentWillUnmount(){
-        var el = ReactDOM.findDOMNode(this);
-        // barGraph.destroy(el, this.state.data);
     },
 
     render(){
@@ -524,6 +733,7 @@ const App = React.createClass({
         mixins: [
         Reflux.connect(countStore, 'count'),
         Reflux.connect(kindStore, 'kind'),
+        Reflux.connect(progressStore, 'progress')
     ],
 
     _changeKind(evt){
@@ -531,12 +741,14 @@ const App = React.createClass({
     },
 
     render(){
-        console.log('xd', this.state.kind)
         var input = {
             fixed: <Inputs />,
-            mining: <MiningInputs />
+            mining: <MiningInputs />,
+            farming: <FarmingInputs />,
+            digging: <DiggingInputs />,
+            meditation: <MeditationInputs />
         }[this.state.kind];
-
+        var now = Math.round((this.state.progress * 10000) / 100);
         return <Grid>
             <Row>
                 <Col md={3}>
@@ -547,6 +759,9 @@ const App = React.createClass({
                     <Input type="select" label="Simulation kind" onChange={this._changeKind}>
                         <option value="fixed">Fixed bonus (channeling)</option>
                         <option value="mining">Mining</option>
+                        <option value="farming">Farming</option>
+                        <option value="digging">Digging</option>
+                        <option value="meditation">Meditation</option>
                     </Input>
                 </Col>
 
@@ -567,6 +782,7 @@ const App = React.createClass({
             </Row>
             <Row>
                 <Col md={4}>
+                    {(now > 0 && now < 100) ? (<span>Simulating... {now}%</span> ): null}
                     <Stats />
                 </Col>
             </Row>
