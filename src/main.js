@@ -246,6 +246,7 @@ const graphDataStore = Reflux.createStore({
     },
 
     recalc(){
+        this.params.skill = parseFloat(this.params.skill);
         worker.postMessage({count: this.count, kind: this.kind, params: this.params});
     },
 
@@ -349,7 +350,7 @@ const SkillInput = React.createClass({
             label={this.props.label || "Skill"}
             ref="skill"
             value={this.props.skill}
-            onChange={eventAction(ParamsActions.setSkill)}
+            onChange={evt => ParamsActions.setSkill(evt.target.value)}
         />
     }
 });
