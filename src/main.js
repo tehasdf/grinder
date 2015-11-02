@@ -246,7 +246,12 @@ const graphDataStore = Reflux.createStore({
     },
 
     recalc(){
-        this.params.skill = parseFloat(this.params.skill);
+        [
+            'skill', 'pick_ql', 'pick_skill', 'pick_skill', 'nature_skill',
+            'rake_ql', 'rake_skill', 'shovel_ql', 'rug_ql'
+        ].map(key => {
+            this.params[key] = parseFloat(this.params[key]);
+        });
         worker.postMessage({count: this.count, kind: this.kind, params: this.params});
     },
 
@@ -373,18 +378,18 @@ const MiningInputs = React.createClass({
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <Input
-                        type="number"
                         label="Pickaxe ql"
+                        type="text"
                         value={this.state.pick_ql}
-                        onChange={eventAction(ParamsActions.setPickQl)}
+                        onChange={evt => ParamsActions.setPickQl(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <Input
-                        type="number"
+                        type="text"
                         label="Pickaxe skill"
                         value={this.state.pick_skill}
-                        onChange={eventAction(ParamsActions.setPickSkill)}
+                        onChange={evt => ParamsActions.setPickSkill(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
@@ -436,10 +441,10 @@ const FarmingInputs = React.createClass({
 
                 <Col mdOffset={1} md={2}>
                     <Input
-                        type="number"
                         label="Nature skill"
+                        type="text"
                         value={this.state.nature_skill}
-                        onChange={eventAction(ParamsActions.setNatureSkill)}
+                        onChange={evt => ParamsActions.setNatureSkill(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
@@ -466,18 +471,18 @@ const FarmingInputs = React.createClass({
             <Row>
                 <Col md={2}>
                     <Input
-                        type="number"
                         label="Rake ql"
+                        type="text"
                         value={this.state.rake_ql}
-                        onChange={eventAction(ParamsActions.setRakeQl)}
+                        onChange={evt => ParamsActions.setRakeQl(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <Input
-                        type="number"
                         label="Rake skill"
+                        type="text"
                         value={this.state.rake_skill}
-                        onChange={eventAction(ParamsActions.setRakeSkill)}
+                        onChange={evt => ParamsActions.setRakeSkill(evt.target.value)}
                     />
                 </Col>
             </Row>
@@ -510,10 +515,10 @@ const DiggingInputs = React.createClass({
 
                 <Col mdOffset={1} md={2}>
                     <Input
-                        type="number"
                         label="Shovel ql"
+                        type="text"
                         value={this.state.shovel_ql}
-                        onChange={eventAction(ParamsActions.setShovelQl)}
+                        onChange={evt => ParamsActions.setShovelQl(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
@@ -571,10 +576,10 @@ const MeditationInputs = React.createClass({
 
                 <Col mdOffset={1} md={2}>
                     <Input
-                        type="number"
                         label="Rug ql"
+                        type="text"
                         value={this.state.rug_ql}
-                        onChange={eventAction(ParamsActions.setRugQl)}
+                        onChange={evt => ParamsActions.setRugQl(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
