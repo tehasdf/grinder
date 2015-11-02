@@ -2,7 +2,6 @@
 const React = window.React;
 const ReactDOM = window.ReactDOM;
 
-console.log('elo', window)
 const {Grid, Row, Col, Input, ProgressBar} = window.ReactBootstrap;
 import Reflux from 'reflux';
 
@@ -286,7 +285,7 @@ const statsStore = Reflux.createStore({
     _update(){
         this.trigger({
             skillgain: sumValues(this.data, [0, 40]),
-            selected: this.brush ? sumValues(this.data, this.brush) : [],
+            selected: this.brush ? sumValues(this.data, [Math.round(this.brush[0]), Math.round(this.brush[1])]) : [],
             top: sumValues(this.data, [90, 101]),
             mean: computeMean(this.data)
         });
