@@ -6,6 +6,12 @@ function normal(mean, std){
     return _distribution.ppf(Math.random());
 }
 
+const _stdNorm = gaussian(0, 1);
+function standardNormal(){
+    return _stdNorm.ppf(Math.random())
+}
+
+
 function effectiveSkill(skill, bonus){
     if (bonus > 70){
         bonus = 70;
@@ -48,8 +54,8 @@ function rollGaussian(skill, difficulty){
     var result = 0;
 
     while (true){
-        result = normal(0, 1) * (w + Math.abs(slide) / 6) + slide;
-        var rejectCutoff = normal(0, 1) * (w - Math.abs(slide) / 6) + slide;
+        result = standardNormal() * (w + Math.abs(slide) / 6) + slide;
+        var rejectCutoff = standardNormal() * (w - Math.abs(slide) / 6) + slide;
         if (slide > 0){
             if (result > (rejectCutoff + Math.max(100 - slide, 0))){
                 result = -1000;
@@ -111,16 +117,19 @@ const calculator = {
 
     },
 
-    meditation({skill, rug_ql, path_level, medi_cooldown}){
-        var difficulty;
-        if (medi_cooldown){
+    meditation({skill, rug_ql, path_level, medi_cooldown, medi_tile}){
+        var difficulty = 5;
+
+        if (medi_tile){
             difficulty = 10;
-        } else {
-            if (((path_level * 10 - skill) > 30) && skill <= 90) {
-                difficulty = (1 + path_level * 3);
-            } else {
-                difficulty = (1 + path_level * 10);
+            if (!medi_cooldown){
+                if (((path_level * 10 - skill) > 30) && skill <= 90) {
+                    difficulty = (1 + path_level * 3);
+                } else {
+                    difficulty = (1 + path_level * 10);
+                }
             }
+
         }
         var effective_medi_skill = effectiveWithItem(skill, rug_ql, 0);
         return rollGaussian(effective_medi_skill, difficulty);
@@ -131,11 +140,11 @@ const calculator = {
 function getData({kind, count, params}){
     var rolls = {};
     var handler = calculator[kind];
-
+    var step = Math.max(1000, count / 100);
     setProgress(0);
     for (let i = 0; i < count; i++){
         let power = handler(params);
-        if (i % 1000 === 0){
+        if (i % step === 0){
             setProgress(i / count);
         }
         power = Math.round(power);
@@ -149,7 +158,6 @@ function getData({kind, count, params}){
     for (let power of Object.keys(rolls)){
         data.push({power: +power, frequency: rolls[power] / count, count: rolls[power]});
     }
-
     return data;
 }
 

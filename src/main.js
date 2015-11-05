@@ -7,7 +7,7 @@ import Reflux from 'reflux';
 
 
 
-const worker = new Worker('worker_compiled.js');
+const worker = new Worker('worker_compiled.v2.js');
 
 worker.addEventListener('message', evt => {
     if (evt.data.message === 'data'){
@@ -134,7 +134,8 @@ const ParamsActions = Reflux.createActions([
     'setDiggingSlope',
     'setRugQl',
     'setPathLevel',
-    'setMediCooldown'
+    'setMediCooldown',
+    'setMediTile',
 ]);
 
 const recalcAction = Reflux.createAction();
@@ -180,7 +181,8 @@ const paramsStore = Reflux.createStore({
             digging_slope: 0,
             rug_ql: 5,
             path_level: 11,
-            medi_cooldown: 0
+            medi_cooldown: 0,
+            medi_tile: 0
         };
         var setParam = key => value => {
             this.params[key] = value
@@ -201,6 +203,7 @@ const paramsStore = Reflux.createStore({
             {action: ParamsActions.setPathLevel, key: 'path_level'},
             {action: ParamsActions.setRugQl, key: 'rug_ql'},
             {action: ParamsActions.setMediCooldown, key: 'medi_cooldown'},
+            {action: ParamsActions.setMediTile, key: 'medi_tile'},
         ].map(({action, key}) => {
             this.listenTo(action, setParam(key), setParam(key))
         });
@@ -596,6 +599,14 @@ const MeditationInputs = React.createClass({
                         label="Has level up cooldown?"
                         value={this.state.medi_cooldown}
                         onChange={evt => ParamsActions.setMediCooldown(evt.target.checked)}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="checkbox"
+                        label="Is special tile?"
+                        value={this.state.medi_tile}
+                        onChange={evt => ParamsActions.setMediTile(evt.target.checked)}
                     />
                 </Col>
             </Row>
