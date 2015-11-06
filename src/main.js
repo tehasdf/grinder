@@ -216,6 +216,25 @@ const paramsStore = Reflux.createStore({
                 difficulty: 40,
                 pick_skill: 90,
                 pick_ql: 90
+            },
+            farming: {
+                skill: 90,
+                nature_skill: 60,
+                difficulty: 70,
+                rake_ql: 90,
+                rake_skill: 90
+            },
+            digging: {
+                skill: 90,
+                shovel_ql: 90,
+                digging_slope: 0,
+                difficulty: 60
+            },
+            meditation: {
+                skill: 90,
+                rug_ql: 5,
+                medi_cooldown: false,
+                medi_tile: false
             }
         };
 
@@ -342,14 +361,14 @@ function act_float(key){
     return evt => {
         var obj = {};
         obj[key] = parseFloat(evt.target.value, 10)
-        console.log('sending', obj);
         setParam(obj);
     }
 }
 
 const Inputs = React.createClass({
     mixins: [
-        Reflux.connect(paramsStore)
+        Reflux.connect(paramsStore),
+        PureRenderMixin
     ],
 
     onSubmit(evt){
@@ -493,20 +512,18 @@ const FarmingInputs = React.createClass({
                 </Col>
 
                 <Col mdOffset={1} md={2}>
-                    <Input
+                    <FloatInput
                         label="Nature skill"
-                        type="text"
+                        name='nature_skill'
                         value={this.state.nature_skill}
-                        onChange={evt => ParamsActions.setNatureSkill(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <Input
                         type="select"
                         label="crop difficulty"
-                        ref="bonus"
                         value={this.state.difficulty}
-                        onChange={eventAction(ParamsActions.setDifficulty)}
+                        onChange={act_float('difficulty')}
                     >
                         <option value="4">4 (Potato)</option>
                         <option value="7">7 (Cotton)</option>
@@ -523,19 +540,17 @@ const FarmingInputs = React.createClass({
             </Row>
             <Row>
                 <Col md={2}>
-                    <Input
+                    <FloatInput
                         label="Rake ql"
-                        type="text"
+                        name='rake_ql'
                         value={this.state.rake_ql}
-                        onChange={evt => ParamsActions.setRakeQl(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
-                    <Input
+                    <FloatInput
                         label="Rake skill"
-                        type="text"
+                        name='rake_skill'
                         value={this.state.rake_skill}
-                        onChange={evt => ParamsActions.setRakeSkill(evt.target.value)}
                     />
                 </Col>
             </Row>
@@ -567,19 +582,17 @@ const DiggingInputs = React.createClass({
                 </Col>
 
                 <Col mdOffset={1} md={2}>
-                    <Input
+                    <FloatInput
                         label="Shovel ql"
-                        type="text"
+                        name='shovel_ql'
                         value={this.state.shovel_ql}
-                        onChange={evt => ParamsActions.setShovelQl(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
-                    <Input
-                        type="number"
+                    <FloatInput
                         label="Slope"
+                        name="digging_slope"
                         value={this.state.digging_slope}
-                        onChange={eventAction(ParamsActions.setDiggingSlope)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
@@ -588,7 +601,7 @@ const DiggingInputs = React.createClass({
                         label="Tile difficulty"
                         ref="bonus"
                         value={this.state.difficulty}
-                        onChange={eventAction(ParamsActions.setDifficulty)}
+                        onChange={act_float('difficulty')}
                     >
                         <option value="0">0 (Dirt)</option>
                         <option value="10">10 (Sand/moss)</option>
@@ -628,11 +641,10 @@ const MeditationInputs = React.createClass({
                 </Col>
 
                 <Col mdOffset={1} md={2}>
-                    <Input
+                    <FloatInputs
                         label="Rug ql"
-                        type="text"
+                        name="rug_ql"
                         value={this.state.rug_ql}
-                        onChange={evt => ParamsActions.setRugQl(evt.target.value)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
@@ -640,7 +652,7 @@ const MeditationInputs = React.createClass({
                         type="number"
                         label="Level on path"
                         value={this.state.path_level}
-                        onChange={eventAction(ParamsActions.setPathLevel)}
+                        onChange={act_float('path_level')}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
@@ -648,7 +660,7 @@ const MeditationInputs = React.createClass({
                         type="checkbox"
                         label="Has level up cooldown?"
                         value={this.state.medi_cooldown}
-                        onChange={evt => ParamsActions.setMediCooldown(evt.target.checked)}
+                        onChange={evt => setParam({medi_cooldown: !!evt.target.checked})}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
@@ -656,7 +668,7 @@ const MeditationInputs = React.createClass({
                         type="checkbox"
                         label="Is special tile?"
                         value={this.state.medi_tile}
-                        onChange={evt => ParamsActions.setMediTile(evt.target.checked)}
+                        onChange={evt => setParam({medi_tile: !!evt.target.checked})}
                     />
                 </Col>
             </Row>
@@ -669,6 +681,8 @@ const MeditationInputs = React.createClass({
         </form>
     }
 });
+
+
 function formatFreqCount({freq, count}){
     return <dd>{Math.round(10000 * freq) / 100}% ({count})</dd>
 }
@@ -676,7 +690,8 @@ function formatFreqCount({freq, count}){
 const Stats = React.createClass({
     mixins: [
         Reflux.connect(statsStore, 'stats'),
-        Reflux.connect(brushAction, 'brush')
+        Reflux.connect(brushAction, 'brush'),
+        PureRenderMixin
     ],
 
     render(){
@@ -709,78 +724,10 @@ const Stats = React.createClass({
 });
 
 
-class BarGraph {
-    constructor(){}
-
-    init(el, props, data){
-        var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
-
-        var svg = d3.select(el).append('svg')
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append('g')
-                .append('g')
-                    .attr('class', 'bars');
-
-        this.update(el, data);
-    }
-
-    _scales(el, data){
-        var highest = Math.max.apply(null, data.map(d => d.frequency));
-        var width = el.offsetWidth;
-        var height = el.offsetHeight;
-        var x = d3.scale.linear()
-            .range([0, width])
-            .domain([-100, 105]);
-
-
-        var y = d3.scale.linear()
-            .range([0, height])
-            .domain([highest * 1.3, 0]);
-
-        return {x, y};
-    }
-
-
-    update(el, data){
-        if (!data){
-            return;
-        }
-        var scales = this._scales(el, data);
-        this._draw(el, scales, data);
-    }
-
-    _draw(el, {x, y}, data){
-
-        var g = d3.select(el).selectAll('.bars');
-
-        var bar = g.selectAll('.bar')
-            .data(data);
-
-
-        var height = y.range()[1];
-        bar.enter().append('rect')
-                .attr('class', 'bar')
-                .attr('x', d => x(d.power))
-                .attr('width', 3)
-                .attr('y', d => y(d.frequency))
-                .attr('height', d => (height - y(d.frequency)));
-
-        bar.exit().remove();
-    }
-
-    destroy(){
-
-    }
-}
-
-const barGraph = new BarGraph();
-
 const Graph = React.createClass({
     mixins: [
-        Reflux.connect(graphDataStore, 'data')
+        Reflux.connect(graphDataStore, 'data'),
+        PureRenderMixin
     ],
 
     componentDidUpdate(){
