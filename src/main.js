@@ -8,17 +8,8 @@ import Graph from './graph';
 import actions from './actions';
 
 import {statsStore, kindStore, countStore, progressStore, paramsStore} from './stores';
+import {act_float, SkillInput, FloatInput} from './inputWidgets';
 
-
-
-function act_float(key){
-
-    return evt => {
-        var obj = {};
-        obj[key] = parseFloat(evt.target.value, 10)
-        actions.setParam(obj);
-    }
-}
 
 const Inputs = React.createClass({
     mixins: [
@@ -62,29 +53,7 @@ const Inputs = React.createClass({
     }
 });
 
-const SkillInput = React.createClass({
-    render(){
-        return <Input
-            type="text"
-            label={this.props.label || "Skill"}
-            ref="skill"
-            value={this.props.skill}
-            onChange={evt => actions.setParam({skill: evt.target.value})}
-        />
-    }
-});
 
-
-const FloatInput = React.createClass({
-    render(){
-        return <Input
-            label={this.props.label}
-            type="text"
-            value={this.props.value}
-            onChange={act_float(this.props.name)}
-        />
-    }
-})
 
 
 const MiningInputs = React.createClass({
