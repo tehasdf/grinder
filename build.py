@@ -18,9 +18,12 @@ worker_fname = 'worker.%s.js' % (label, )
 worker_path = os.path.join('dist', worker_fname)
 subprocess.check_call(['browserify', '-t', 'babelify', 'src/worker.js', '-o', worker_path])
 
-with open(main_fname, 'w+') as f:
+with open(main_path, 'r') as f:
     data = f.read()
-    data = data.replace('worker_compiled.js', worker_fname)
+
+data = data.replace('worker_compiled.js', worker_fname)
+
+with open(main_path, 'w') as f:
     f.write(data)
 
 index_fname = os.path.join('dist', 'index.html')
