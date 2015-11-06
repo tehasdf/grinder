@@ -1,4 +1,5 @@
 const {Input} = window.ReactBootstrap;
+import PureRenderMixin  from 'react-addons-pure-render-mixin';
 import actions from './actions';
 
 
@@ -16,24 +17,32 @@ export function act_float(key){
 
 export const SkillInput = React.createClass({
     render(){
-        return <Input
-            type="text"
+        return <FloatInput
             label={this.props.label || "Skill"}
-            ref="skill"
             value={this.props.skill}
-            onChange={evt => actions.setParam({skill: evt.target.value})}
+            name="skill"
         />
     }
 });
 
 
 export const FloatInput = React.createClass({
+    mixins: [PureRenderMixin],
+    getInitialState(){
+        return {value: this.props.value}
+    },
+    setValue(evt){
+        var value = evt.target.value;
+        this.setState({value})
+        act_float(this.props.name)(evt)
+    },
+
     render(){
         return <Input
             label={this.props.label}
             type="text"
-            value={this.props.value}
-            onChange={act_float(this.props.name)}
+            value={this.state.value}
+            onChange={this.setValue}
         />
     }
 })
