@@ -7,7 +7,7 @@ import Reflux from 'reflux';
 
 
 
-const worker = new Worker('worker_compiled.v2.js');
+const worker = new Worker('worker_compiled.js');
 
 worker.addEventListener('message', evt => {
     if (evt.data.message === 'data'){
@@ -140,6 +140,8 @@ const ParamsActions = Reflux.createActions([
 
 const recalcAction = Reflux.createAction();
 const brushAction = Reflux.createAction();
+
+const setParam = Reflux.createAction();
 const setKind = Reflux.createAction();
 
 const countStore = Reflux.createStore({
@@ -168,49 +170,78 @@ const kindStore = Reflux.createStore({
 
 const paramsStore = Reflux.createStore({
     init(){
+        // this.params = {
+        //     skill: 90,
+        //     bonus: 70,
+        //     difficulty: 60,
+        //     pick_skill: 90,
+        //     pick_ql: 90,
+        //     rake_ql: 90,
+        //     rake_skill: 90,
+        //     nature_skill: 60,
+        //     shovel_ql: 90,
+        //     digging_slope: 0,
+        //     rug_ql: 5,
+        //     path_level: 11,
+        //     medi_cooldown: 0,
+        //     medi_tile: 0
+        // };
+        // [
+        //     {action: ParamsActions.setDifficulty, key: 'difficulty'},
+        //     {action: ParamsActions.setSkill, key: 'skill'},
+        //     {action: ParamsActions.setBonus, key: 'bonus'},
+        //     {action: ParamsActions.setPickSkill, key: 'pick_skill'},
+        //     {action: ParamsActions.setPickQl, key: 'pick_ql'},
+        //     {action: ParamsActions.setRakeQl, key: 'rake_ql'},
+        //     {action: ParamsActions.setRakeSkill, key: 'rake_skill'},
+        //     {action: ParamsActions.setNatureSkill, key: 'nature_skill'},
+        //     {action: ParamsActions.setShovelQl, key: 'shovel_ql'},
+        //     {action: ParamsActions.setDiggingSlope, key: 'digging_slope'},
+        //     {action: ParamsActions.setPathLevel, key: 'path_level'},
+        //     {action: ParamsActions.setRugQl, key: 'rug_ql'},
+        //     {action: ParamsActions.setMediCooldown, key: 'medi_cooldown'},
+        //     {action: ParamsActions.setMediTile, key: 'medi_tile'},
+        // ].map(({action, key}) => {
+        //     this.listenTo(action, setParam(key), setParam(key))
+        // });
+
         this.params = {
-            skill: 90,
-            bonus: 70,
-            difficulty: 60,
-            pick_skill: 90,
-            pick_ql: 90,
-            rake_ql: 90,
-            rake_skill: 90,
-            nature_skill: 60,
-            shovel_ql: 90,
-            digging_slope: 0,
-            rug_ql: 5,
-            path_level: 11,
-            medi_cooldown: 0,
-            medi_tile: 0
-        };
-        var setParam = key => value => {
-            this.params[key] = value
-            this.trigger(this.params);
+            fixed: {
+                skill: 90,
+                bonus: 70,
+                difficulty: 60
+            },
+            mining: {
+                skill: 90,
+                difficulty: 40,
+                pick_skill: 90,
+                pick_ql: 90
+            }
         };
 
-        [
-            {action: ParamsActions.setDifficulty, key: 'difficulty'},
-            {action: ParamsActions.setSkill, key: 'skill'},
-            {action: ParamsActions.setBonus, key: 'bonus'},
-            {action: ParamsActions.setPickSkill, key: 'pick_skill'},
-            {action: ParamsActions.setPickQl, key: 'pick_ql'},
-            {action: ParamsActions.setRakeQl, key: 'rake_ql'},
-            {action: ParamsActions.setRakeSkill, key: 'rake_skill'},
-            {action: ParamsActions.setNatureSkill, key: 'nature_skill'},
-            {action: ParamsActions.setShovelQl, key: 'shovel_ql'},
-            {action: ParamsActions.setDiggingSlope, key: 'digging_slope'},
-            {action: ParamsActions.setPathLevel, key: 'path_level'},
-            {action: ParamsActions.setRugQl, key: 'rug_ql'},
-            {action: ParamsActions.setMediCooldown, key: 'medi_cooldown'},
-            {action: ParamsActions.setMediTile, key: 'medi_tile'},
-        ].map(({action, key}) => {
-            this.listenTo(action, setParam(key), setParam(key))
+        this.kind = 'fixed';
+
+        this.listenTo(setParam, newParams => {
+            Object.keys(newParams).forEach(key => {
+                this.current[key] = newParams[key];
+            });
+            this.trigger(this.current);
         });
+
+        var setKind = kind => {
+            this.kind = kind;
+            this.trigger(this.current);
+        };
+
+        this.listenTo(kindStore, setKind, setKind);
+    },
+
+    get current(){
+        return this.params[this.kind];
     },
 
     getInitialState(){
-        return this.params;
+        return this.current;
     }
 })
 
@@ -306,6 +337,16 @@ function eventAction(action){
     return evt => action(parseFloat(evt.target.value, 10));
 }
 
+function act_float(key){
+
+    return evt => {
+        var obj = {};
+        obj[key] = parseFloat(evt.target.value, 10)
+        console.log('sending', obj);
+        setParam(obj);
+    }
+}
+
 const Inputs = React.createClass({
     mixins: [
         Reflux.connect(paramsStore)
@@ -323,21 +364,17 @@ const Inputs = React.createClass({
                     <SkillInput skill={this.state.skill} />
                 </Col>
                 <Col mdOffset={1} md={2}>
-                    <Input
-                        type="number"
-                        label="Difficulty"
-                        ref="difficulty"
+                    <FloatInput
+                        label='Difficulty'
+                        name='difficulty'
                         value={this.state.difficulty}
-                        onChange={eventAction(ParamsActions.setDifficulty)}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
-                    <Input
-                        type="number"
-                        label="Bonus"
-                        ref="bonus"
+                    <FloatInput
+                        label='Bonus'
+                        name='bonus'
                         value={this.state.bonus}
-                        onChange={eventAction(ParamsActions.setBonus)}
                     />
                 </Col>
             </Row>
@@ -358,14 +395,28 @@ const SkillInput = React.createClass({
             label={this.props.label || "Skill"}
             ref="skill"
             value={this.props.skill}
-            onChange={evt => ParamsActions.setSkill(evt.target.value)}
+            onChange={evt => setParam({skill: evt.target.value})}
         />
     }
 });
 
+
+const FloatInput = React.createClass({
+    render(){
+        return <Input
+            label={this.props.label}
+            type="text"
+            value={this.props.value}
+            onChange={act_float(this.props.name)}
+        />
+    }
+})
+import PureRenderMixin  from 'react-addons-pure-render-mixin';
+
 const MiningInputs = React.createClass({
     mixins: [
-        Reflux.connect(paramsStore)
+        Reflux.connect(paramsStore),
+        PureRenderMixin
     ],
 
     onSubmit(evt){
@@ -380,20 +431,19 @@ const MiningInputs = React.createClass({
                     <SkillInput label="Mining skill" skill={this.state.skill} />
                 </Col>
                 <Col mdOffset={1} md={2}>
-                    <Input
-                        label="Pickaxe ql"
-                        type="text"
-                        value={this.state.pick_ql}
-                        onChange={evt => ParamsActions.setPickQl(evt.target.value)}
+                    <FloatInput
+                        label='Pickaxe ql'
+                        name='pick_skill'
+                        value={this.state.pick_skill}
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
-                    <Input
-                        type="text"
-                        label="Pickaxe skill"
-                        value={this.state.pick_skill}
-                        onChange={evt => ParamsActions.setPickSkill(evt.target.value)}
+                    <FloatInput
+                        label='Pickaxe ql'
+                        name='pick_ql'
+                        value={this.state.pick_ql}
                     />
+
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <Input
@@ -401,7 +451,7 @@ const MiningInputs = React.createClass({
                         label="vein difficulty"
                         ref="bonus"
                         value={this.state.difficulty}
-                        onChange={eventAction(ParamsActions.setDifficulty)}
+                        onChange={act_float('difficulty')}
                     >
                         <option value="2">2 (Rock/zinc)</option>
                         <option value="3">3 (Iron)</option>
