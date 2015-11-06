@@ -117,7 +117,7 @@ const calculator = {
 
     },
 
-    meditation({skill, rug_ql, path_level, medi_cooldown, medi_tile}){
+    meditation({skill, rug_ql, path_level, nature_skill, medi_cooldown, medi_tile}){
         var difficulty = 5;
 
         if (medi_tile){
@@ -131,7 +131,10 @@ const calculator = {
             }
 
         }
-        var effective_medi_skill = effectiveWithItem(skill, rug_ql, 0);
+        var nature_bonus = rollGaussian(nature_skill, difficulty) / 10;
+        var bonus = Math.max(0, nature_bonus);
+
+        var effective_medi_skill = effectiveWithItem(skill, rug_ql, bonus);
         return rollGaussian(effective_medi_skill, difficulty);
     }
 }

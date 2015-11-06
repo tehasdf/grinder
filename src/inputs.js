@@ -268,6 +268,13 @@ const MeditationInputs = React.createClass({
                     />
                 </Col>
                 <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label="Nature skill"
+                        name="nature_skill"
+                        value={this.state.nature_skill}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
                     <Input
                         type="number"
                         label="Level on path"

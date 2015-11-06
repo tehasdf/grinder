@@ -72,6 +72,7 @@ export const paramsStore = Reflux.createStore({
             meditation: {
                 skill: 90,
                 rug_ql: 5,
+                nature_skill: 70,
                 medi_cooldown: false,
                 medi_tile: false,
                 path_level: 11
