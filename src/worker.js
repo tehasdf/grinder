@@ -116,15 +116,12 @@ function _rareQuality(power, bonus, numbBonus, fiddle){
 
 const calculator = {
     fixed({skill, difficulty, bonus}){
-        var effective = effectiveSkill(skill, bonus);
-        return rollGaussian(effective, difficulty);
+        return skillCheck({skill, difficulty, bonus});
     },
 
     mining({skill, difficulty, pick_ql, pick_skill}){
-        var effective_pick_skill = effectiveWithItem(pick_skill, pick_ql, 0);
-        var bonus = rollGaussian(effective_pick_skill, difficulty) / 5;
-        var effective_mining = effectiveWithItem(skill, pick_ql, bonus);
-        var power = rollGaussian(effective_mining, difficulty);
+        var bonus = skillCheck({pick_skill, ql: pick_ql, difficulty}) / 5;
+        return skillCheck({skill, difficulty, bonus, ql: pick_ql});
         return power;
     },
 
@@ -143,15 +140,11 @@ const calculator = {
     },
 
     farming({skill, difficulty, rake_ql, rake_skill, nature_skill}){
-        var effective_rake_skill = effectiveWithItem(rake_skill, rake_ql, 0);
-        var bonus = rollGaussian(effective_rake_skill, difficulty) / 10;
-
+        var bonus = skillCheck({skill: rake_skill, ql: rake_ql, difficulty});
         var nature_bonus = rollGaussian(nature_skill, difficulty) / 10;
         bonus += Math.max(0, nature_bonus);
 
-        var effective_farming = effectiveWithItem(skill, rake_ql, bonus);
-        var power = rollGaussian(effective_farming, difficulty);
-        return power
+        return skillCheck({skill, ql: rake_ql, difficulty, bonus});
     },
 
     digging({skill, difficulty, digging_slope, shovel_ql}){
@@ -181,7 +174,7 @@ const calculator = {
         var bonus = Math.max(0, nature_bonus);
 
         var effective_medi_skill = effectiveWithItem(skill, rug_ql, bonus);
-        return rollGaussian(effective_medi_skill, difficulty);
+        return skillCheck({skill, ql: rug_ql, bonus, difficulty});
     },
 
     creation({skill, difficulty, tool_ql, tool_skill, material_ql, imbue, tool_rarity, parent_skill}){
@@ -192,8 +185,7 @@ const calculator = {
         if (parent_skill > 0){
             bonus += Math.max(0, rollGaussian(parent_skill, difficulty) / 10);
         }
-        var effective_skill = effectiveWithItem(skill, tool_ql, bonus);
-        var power = rollGaussian(effective_skill, difficulty);
+        var power = skillCheck({skill, ql: tool_ql, bonus, difficulty});
         var imbueEnhancement = 1.0 + 0.23047 * imbue / 100;
         var itq = power * imbueEnhancement;
         if (material_ql < itq){
