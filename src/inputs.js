@@ -483,6 +483,79 @@ const CreationInputs = React.createClass({
         </form>
     }
 });
+
+
+const WoodcuttingQLInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore),
+        PureRenderMixin
+    ],
+
+    onSubmit(evt){
+        actions.recalc();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Woodcutting" skill={this.state.skill} />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Tool skill (hatchet/saw)'
+                        name='hatchet_skill'
+                        value={this.state.hatchet_skill}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Tool ql (hatchet/saw)'
+                        name='hatchet_ql'
+                        value={this.state.hatchet_ql}
+                    />
+
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Difficulty (15 - tree age)'
+                        name='difficulty'
+                        value={this.state.difficulty}
+                    />
+                </Col>
+            </Row>
+            <Row>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Imbue'
+                        name='imbue'
+                        value={this.state.imbue}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        label='Hatchet rarity'
+                        type="select"
+                        value={this.state.hatchet_rarity}
+                        onChange={act_float('hatchet_rarity')}
+                    >
+                        <option value="0">None</option>
+                        <option value="1">Rare</option>
+                        <option value="2">Supreme</option>
+                        <option value="3">Fantastic</option>
+                    </Input>
+                </Col>
+            </Row>
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
 const Inputs = React.createClass({
     mixins: [PureRenderMixin],
     render(){
@@ -493,7 +566,8 @@ const Inputs = React.createClass({
             digging: <DiggingInputs />,
             meditation: <MeditationInputs />,
             mining_ql: <MiningQLInputs />,
-            creation: <CreationInputs />
+            creation: <CreationInputs />,
+            woodcutting_ql: <WoodcuttingQLInputs />
         }[this.props.kind];
         return input;
     }

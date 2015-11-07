@@ -95,7 +95,15 @@ export const paramsStore = Reflux.createStore({
                 imbue: 0,
                 tool_rarity: 0,
                 parent_skill: 0
-            }
+            },
+            woodcutting_ql: {
+                skill: 90,
+                hatchet_ql: 90,
+                hatchet_skill: 80,
+                difficulty: 15,
+                imbue: 0,
+                hatchet_rarity: 0
+            },
         };
 
         this.kind = 'fixed';

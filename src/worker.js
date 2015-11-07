@@ -80,6 +80,18 @@ function rollGaussian(skill, difficulty){
     return result;
 }
 
+
+function skillCheck({difficulty, skill, ql, bonus}){
+    bonus = bonus || 0;
+    var effective;
+    if (ql === undefined){
+        effective = effectiveWithItem(skill, ql, bonus);
+    } else {
+        effective = effectiveSkill(skill, bonus);
+    }
+    return rollGaussian(effective, difficulty);
+}
+
 function calcRareQuality(power, bonus){
     return _rareQuality(power, bonus, 3, 100.0);
 }
@@ -191,6 +203,23 @@ const calculator = {
             itq = calcRareQuality(itq, tool_rarity);
         }
         return Math.max(1.0, itq);
+    },
+
+    woodcutting_ql({skill, difficulty, hatchet_ql, hatchet_skill, imbue, hatchet_rarity}){
+        var hatchet_bonus = skillCheck({difficulty, skill: hatchet_skill, ql: hatchet_ql});
+        var bonus = Math.max(0, hatchet_bonus);
+
+        var ql = skillCheck({difficulty, skill, ql: hatchet_ql, bonus});
+        ql = Math.max(1, ql);
+        var imbueEnhancement = 1 + 0.23047 * imbue / 100;
+        var woodc = skill * imbueEnhancement;
+        if (woodc < ql){
+            ql = woodc;
+        }
+        if (ql === 1){
+            ql = Math.max(skill, 1 + Math.random() * 10 * imbueEnhancement);
+        }
+        return ql;
     }
 }
 
