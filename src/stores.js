@@ -56,6 +56,15 @@ export const paramsStore = Reflux.createStore({
                 pick_skill: 90,
                 pick_ql: 90
             },
+            mining_ql: {
+                skill: 95,
+                difficulty: 3,
+                pick_skill: 95,
+                pick_rarity: 2,
+                pick_ql: 95,
+                vein_ql: 79,
+                imbue: 100
+            },
             farming: {
                 skill: 90,
                 nature_skill: 60,
@@ -165,12 +174,6 @@ export const graphDataStore = Reflux.createStore({
     },
 
     recalc(){
-        [
-            'skill', 'pick_ql', 'pick_skill', 'pick_skill', 'nature_skill',
-            'rake_ql', 'rake_skill', 'shovel_ql', 'rug_ql'
-        ].map(key => {
-            this.params[key] = parseFloat(this.params[key]);
-        });
         worker.postMessage({count: this.count, kind: this.kind, params: this.params});
     },
 

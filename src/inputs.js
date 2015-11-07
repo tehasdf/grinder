@@ -114,6 +114,94 @@ const MiningInputs = React.createClass({
 });
 
 
+const MiningQLInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore),
+        PureRenderMixin
+    ],
+
+    onSubmit(evt){
+        actions.recalc();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Mining skill" skill={this.state.skill} />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Pickaxe ql'
+                        name='pick_skill'
+                        value={this.state.pick_skill}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Pickaxe ql'
+                        name='pick_ql'
+                        value={this.state.pick_ql}
+                    />
+
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        type="select"
+                        label="vein difficulty"
+                        ref="bonus"
+                        value={this.state.difficulty}
+                        onChange={act_float('difficulty')}
+                    >
+                        <option value="2">2 (Rock/zinc)</option>
+                        <option value="3">3 (Iron)</option>
+                        <option value="10">10 (Tin)</option>
+                        <option value="20">20 (Copper/slate/lead)</option>
+                        <option value="35">35 (Silver)</option>
+                        <option value="40">40 (Gold/reinforced/marble)</option>
+                        <option value="55">55 (Glimmersteel)</option>
+                        <option value="60">60 (Adamantine)</option>
+                    </Input>
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Vein ql modifier (0 - 79)'
+                        name='vein_ql'
+                        value={this.state.vein_ql}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Pick imbue power'
+                        name='imbue'
+                        value={this.state.imbue}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        label='Pick rarity'
+                        type="select"
+                        value={this.state.pick_rarity}
+                        onChange={act_float('pick_rarity')}
+                    >
+                        <option value="0">None</option>
+                        <option value="1">Rare</option>
+                        <option value="2">Supreme</option>
+                        <option value="3">Fantastic</option>
+                    </Input>
+                </Col>
+            </Row>
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
+
 const FarmingInputs = React.createClass({
     mixins: [
         Reflux.connect(paramsStore)
@@ -318,7 +406,8 @@ const Inputs = React.createClass({
             mining: <MiningInputs />,
             farming: <FarmingInputs />,
             digging: <DiggingInputs />,
-            meditation: <MeditationInputs />
+            meditation: <MeditationInputs />,
+            mining_ql: <MiningQLInputs />
         }[this.props.kind];
         return input;
     }

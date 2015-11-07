@@ -35,7 +35,8 @@ const App = React.createClass({
                 <Col md={4}>
                     <Input type="select" label="Simulation kind" onChange={this._changeKind}>
                         <option value="fixed">Fixed bonus (channeling)</option>
-                        <option value="mining">Mining</option>
+                        <option value="mining">Mining (power for skillgain)</option>
+                        <option value="mining_ql">Mining (resulting ql)</option>
                         <option value="farming">Farming</option>
                         <option value="digging">Digging</option>
                         <option value="meditation">Meditation</option>

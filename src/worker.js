@@ -80,6 +80,19 @@ function rollGaussian(skill, difficulty){
     return result;
 }
 
+function calcOreRareQuality(power, bonus){
+    var fiddle = 108.428;
+    var numbBonus = 2;
+    if (bonus > 0){
+        var val = fiddle - power;
+        var square = val * val;
+        var n = square / 1000;
+        var mod = Math.min(n * 1.25, 1.0);
+        bonus = bonus * 3 / numbBonus * mod;
+    }
+    return Math.max(Math.min(99.999, power + bonus), 1);
+}
+
 
 const calculator = {
     fixed({skill, difficulty, bonus}){
@@ -88,12 +101,26 @@ const calculator = {
     },
 
     mining({skill, difficulty, pick_ql, pick_skill}){
-        // TODO cavetilebehaviour.java:445, add imbue
         var effective_pick_skill = effectiveWithItem(pick_skill, pick_ql, 0);
         var bonus = rollGaussian(effective_pick_skill, difficulty) / 5;
         var effective_mining = effectiveWithItem(skill, pick_ql, bonus);
         var power = rollGaussian(effective_mining, difficulty);
         return power;
+    },
+
+    mining_ql({skill, difficulty, pick_ql, pick_skill, pick_rarity, vein_ql, imbue}){
+        var effective_pick_skill = effectiveWithItem(pick_skill, pick_ql, 0);
+        var bonus = rollGaussian(effective_pick_skill, difficulty) / 5;
+        var effective_mining = effectiveWithItem(skill, pick_ql, bonus);
+        var power = Math.max(1.0, rollGaussian(effective_mining, difficulty));
+        var imbueEnhancement = 1.0 + 0.23047 * imbue / 100;
+        if (skill * imbueEnhancement < power){
+            power = skill * imbueEnhancement;
+        }
+        var max = Math.min(100, 20 + vein_ql * imbueEnhancement);
+        power = Math.min(power, max);
+        var orePower = calcOreRareQuality(power, pick_rarity);
+        return orePower;
     },
 
     farming({skill, difficulty, rake_ql, rake_skill, nature_skill}){
@@ -144,6 +171,7 @@ function getData({kind, count, params}){
     var rolls = {};
     var handler = calculator[kind];
     var step = Math.max(1000, count / 100);
+    console.info('params', params);
     setProgress(0);
     for (let i = 0; i < count; i++){
         let power = handler(params);
