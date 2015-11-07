@@ -40,6 +40,7 @@ const App = React.createClass({
                         <option value="farming">Farming</option>
                         <option value="digging">Digging</option>
                         <option value="meditation">Meditation</option>
+                        <option value="creation">Creation</option>
                     </Input>
                 </Col>
 

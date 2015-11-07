@@ -80,9 +80,17 @@ function rollGaussian(skill, difficulty){
     return result;
 }
 
+function calcRareQuality(power, bonus){
+    return _rareQuality(power, bonus, 3, 100.0);
+}
+
 function calcOreRareQuality(power, bonus){
     var fiddle = 108.428;
     var numbBonus = 2;
+    return _rareQuality(power, bonus, numbBonus, fiddle);
+}
+
+function _rareQuality(power, bonus, numbBonus, fiddle){
     if (bonus > 0){
         var val = fiddle - power;
         var square = val * val;
@@ -91,8 +99,8 @@ function calcOreRareQuality(power, bonus){
         bonus = bonus * 3 / numbBonus * mod;
     }
     return Math.max(Math.min(99.999, power + bonus), 1);
-}
 
+}
 
 const calculator = {
     fixed({skill, difficulty, bonus}){
@@ -109,14 +117,13 @@ const calculator = {
     },
 
     mining_ql({skill, difficulty, pick_ql, pick_skill, pick_rarity, vein_ql, imbue}){
-        var effective_pick_skill = effectiveWithItem(pick_skill, pick_ql, 0);
-        var bonus = rollGaussian(effective_pick_skill, difficulty) / 5;
-        var effective_mining = effectiveWithItem(skill, pick_ql, bonus);
-        var power = Math.max(1.0, rollGaussian(effective_mining, difficulty));
+        var power = Math.max(1.0, calculator.mining({skill, difficulty, pick_ql, pick_skill}));
+
         var imbueEnhancement = 1.0 + 0.23047 * imbue / 100;
         if (skill * imbueEnhancement < power){
             power = skill * imbueEnhancement;
         }
+
         var max = Math.min(100, 20 + vein_ql * imbueEnhancement);
         power = Math.min(power, max);
         var orePower = calcOreRareQuality(power, pick_rarity);
@@ -163,6 +170,27 @@ const calculator = {
 
         var effective_medi_skill = effectiveWithItem(skill, rug_ql, bonus);
         return rollGaussian(effective_medi_skill, difficulty);
+    },
+
+    creation({skill, difficulty, tool_ql, tool_skill, material_ql, imbue, tool_rarity, parent_skill}){
+        var bonus = 0;
+        if (tool_skill > 0){
+            bonus += Math.max(-10, rollGaussian(tool_skill, difficulty));
+        }
+        if (parent_skill > 0){
+            bonus += Math.max(0, rollGaussian(parent_skill, difficulty) / 10);
+        }
+        var effective_skill = effectiveWithItem(skill, tool_ql, bonus);
+        var power = rollGaussian(effective_skill, difficulty);
+        var imbueEnhancement = 1.0 + 0.23047 * imbue / 100;
+        var itq = power * imbueEnhancement;
+        if (material_ql < itq){
+            itq = Math.max(1.0, material_ql);
+        }
+        if (tool_rarity > 0){
+            itq = calcRareQuality(itq, tool_rarity);
+        }
+        return Math.max(1.0, itq);
     }
 }
 

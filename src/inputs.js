@@ -71,7 +71,7 @@ const MiningInputs = React.createClass({
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <FloatInput
-                        label='Pickaxe ql'
+                        label='Pickaxe skill'
                         name='pick_skill'
                         value={this.state.pick_skill}
                     />
@@ -133,7 +133,7 @@ const MiningQLInputs = React.createClass({
                 </Col>
                 <Col mdOffset={1} md={2}>
                     <FloatInput
-                        label='Pickaxe ql'
+                        label='Pickaxe skill'
                         name='pick_skill'
                         value={this.state.pick_skill}
                     />
@@ -398,6 +398,91 @@ const MeditationInputs = React.createClass({
 });
 
 
+const CreationInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore),
+        PureRenderMixin
+    ],
+
+    onSubmit(evt){
+        actions.recalc();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Primary skill" skill={this.state.skill} />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Tool skill (0 if not applicable)'
+                        name='tool_skill'
+                        value={this.state.tool_skill}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Tool ql'
+                        name='tool_ql'
+                        value={this.state.tool_ql}
+                    />
+
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Item difficulty'
+                        name='difficulty'
+                        value={this.state.difficulty}
+                    />
+                </Col>
+            </Row>
+            <Row>
+                <Col md={2}>
+                    <FloatInput
+                        label='Material ql'
+                        name='material_ql'
+                        value={this.state.material_ql}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Imbue'
+                        name='imbue'
+                        value={this.state.imbue}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Parent skill (0 if not applicable)'
+                        name='parent_skill'
+                        value={this.state.parent_skill}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        label='Tool rarity'
+                        type="select"
+                        value={this.state.tool_rarity}
+                        onChange={act_float('tool_rarity')}
+                    >
+                        <option value="0">None</option>
+                        <option value="1">Rare</option>
+                        <option value="2">Supreme</option>
+                        <option value="3">Fantastic</option>
+                    </Input>
+                </Col>
+            </Row>
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
 const Inputs = React.createClass({
     mixins: [PureRenderMixin],
     render(){
@@ -407,7 +492,8 @@ const Inputs = React.createClass({
             farming: <FarmingInputs />,
             digging: <DiggingInputs />,
             meditation: <MeditationInputs />,
-            mining_ql: <MiningQLInputs />
+            mining_ql: <MiningQLInputs />,
+            creation: <CreationInputs />
         }[this.props.kind];
         return input;
     }

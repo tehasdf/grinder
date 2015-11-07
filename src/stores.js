@@ -85,6 +85,16 @@ export const paramsStore = Reflux.createStore({
                 medi_cooldown: false,
                 medi_tile: false,
                 path_level: 11
+            },
+            creation: {
+                skill: 90,
+                tool_ql: 90,
+                tool_skill: 0,
+                difficulty: 60,
+                material_ql: 99,
+                imbue: 0,
+                tool_rarity: 0,
+                parent_skill: 0
             }
         };
 
