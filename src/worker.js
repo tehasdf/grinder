@@ -119,7 +119,7 @@ const calculator = {
     },
 
     mining({skill, difficulty, pick_ql, pick_skill}){
-        var bonus = skillCheck({pick_skill, ql: pick_ql, difficulty}) / 5;
+        var bonus = skillCheck({skill: pick_skill, ql: pick_ql, difficulty}) / 5;
         return skillCheck({skill, difficulty, bonus, ql: pick_ql});
         return power;
     },
@@ -254,7 +254,8 @@ const calculator = {
             var max = skill + (100 - skill) * improveBonus;
             var diff = Math.max(0, max - ql);
 
-            var power = skillCheck({skill, difficulty: ql, ql: tool_ql});
+            var bonus = Math.max(0, skillCheck({skill: parent_skill, difficulty: ql}) / 10);
+            var power = skillCheck({skill, difficulty: ql, ql: tool_ql, bonus});
 
             var mod = (100 - ql) / 20 / 100 * (Math.random() + Math.random() + Math.random() + Math.random()) / 2;
 
