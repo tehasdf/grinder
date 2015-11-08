@@ -556,6 +556,67 @@ const WoodcuttingQLInputs = React.createClass({
         </form>
     }
 });
+
+
+const ImpingInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore),
+        PureRenderMixin
+    ],
+
+    onSubmit(evt){
+        actions.recalc();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Skill" skill={this.state.skill} />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Target ql'
+                        name='target_ql'
+                        value={this.state.target_ql}
+                    />
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Tool ql'
+                        name='hatchet_skill'
+                        value={this.state.tool_ql}
+                    />
+                </Col>
+            </Row>
+            <Row>
+                <Col md={2}>
+                    <FloatInput
+                        label='Tool skill (0 if not applicable)'
+                        name='hatchet_ql'
+                        value={this.state.tool_skill}
+                    />
+
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Parent skill (0 if not applicable)'
+                        name='parent_skill'
+                        value={this.state.parent_skill}
+                    />
+                </Col>
+            </Row>
+
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
 const Inputs = React.createClass({
     mixins: [PureRenderMixin],
     render(){
@@ -567,7 +628,8 @@ const Inputs = React.createClass({
             meditation: <MeditationInputs />,
             mining_ql: <MiningQLInputs />,
             creation: <CreationInputs />,
-            woodcutting_ql: <WoodcuttingQLInputs />
+            woodcutting_ql: <WoodcuttingQLInputs />,
+            imping: <ImpingInputs />
         }[this.props.kind];
         return input;
     }

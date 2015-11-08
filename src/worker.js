@@ -52,7 +52,6 @@ function rollGaussian(skill, difficulty){
 
     var attempts = 0;
     var result = 0;
-
     while (true){
         result = standardNormal() * (w + Math.abs(slide) / 6) + slide;
         var rejectCutoff = standardNormal() * (w - Math.abs(slide) / 6) + slide;
@@ -85,9 +84,9 @@ function skillCheck({difficulty, skill, ql, bonus}){
     bonus = bonus || 0;
     var effective;
     if (ql === undefined){
-        effective = effectiveWithItem(skill, ql, bonus);
-    } else {
         effective = effectiveSkill(skill, bonus);
+    } else {
+        effective = effectiveWithItem(skill, ql, bonus);
     }
     return rollGaussian(effective, difficulty);
 }
@@ -212,6 +211,18 @@ const calculator = {
             ql = Math.max(skill, 1 + Math.random() * 10 * imbueEnhancement);
         }
         return ql;
+    },
+
+    imping({skill, target_ql, tool_ql, tool_skill, parent_skill}){
+        var bonus = 0;
+        if (tool_skill > 0){
+            bonus += Math.max(0, skillCheck({skill: tool_skill, ql: tool_ql, difficulty: target_ql}));
+        }
+        if (parent_skill > 0){
+            bonus += Math.max(0, skillCheck({skill: parent_skill, difficulty: target_ql}) / 10);
+        }
+
+        return skillCheck({skill, difficulty: target_ql, ql: tool_ql, bonus});
     }
 }
 

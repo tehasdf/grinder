@@ -104,6 +104,13 @@ export const paramsStore = Reflux.createStore({
                 imbue: 0,
                 hatchet_rarity: 0
             },
+            imping: {
+                skill: 90,
+                target_ql: 90,
+                tool_ql: 90,
+                tool_skill: 80,
+                parent_skill: 80
+            }
         };
 
         this.kind = 'fixed';
