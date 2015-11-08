@@ -110,6 +110,24 @@ export const paramsStore = Reflux.createStore({
                 tool_ql: 90,
                 tool_skill: 80,
                 parent_skill: 80
+            },
+            smithing_ql: {
+                skill: 95,
+                start_ql: 70,
+                target_ql: 90,
+                target_rarity: 0,
+                pelt_ql: 95,
+                pelt_imbue: 0,
+                whetstone_ql: 95,
+                whetstone_imbue: 0,
+                hammer_ql: 95,
+                hammer_skill: 90,
+                hammer_imbue: 0,
+                lump_ql: 90,
+                lump_imbue: 0,
+                parent_skill: 85,
+                is_double: false,
+                use_title: false
             }
         };
 

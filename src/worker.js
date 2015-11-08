@@ -223,6 +223,76 @@ const calculator = {
         }
 
         return skillCheck({skill, difficulty: target_ql, ql: tool_ql, bonus});
+    },
+
+    smithing_ql({skill, start_ql, target_ql, target_rarity, pelt_ql, pelt_imbue, whetstone_ql, whetsone_imbue,
+            hammer_ql, hammer_skill, hammer_imbue, lump_ql, lump_imbue,
+            parent_skill, is_double, use_title}){
+
+        var items = [
+            {ql: lump_ql, imbue: lump_imbue},
+            {ql: hammer_ql, skill: hammer_skill, imbue: hammer_imbue},
+            {ql: 100},
+            {ql: whetstone_ql, imbue: whetsone_imbue},
+            {ql: pelt_ql, imbue: pelt_imbue}
+        ];
+        var steps = 0;
+        var ql = start_ql;
+        var highest_ql = start_ql;
+        while (true){
+            steps++;
+            if (steps % 100 == 0 && (ql < start_ql)){
+                return -100;
+            }
+            var item = items[Math.floor(Math.random()*items.length)];
+            var tool_ql = item.ql;
+            var imbue = item.imbue || 0;
+            var tool_skill = item.skill || 0;
+            var imbueEnhancement = 1.0 + imbue / 100;
+            var improveBonus = 0.23047 * imbueEnhancement;
+
+            var max = skill + (100 - skill) * improveBonus;
+            var diff = Math.max(0, max - ql);
+
+            var power = skillCheck({skill, difficulty: ql, ql: tool_ql});
+
+            var mod = (100 - ql) / 20 / 100 * (Math.random() + Math.random() + Math.random() + Math.random()) / 2;
+
+
+            if (power < 0){
+                continue;
+            }
+
+            if (diff < 0){
+                mod *= 0.01;
+            }
+            if (ql < highest_ql){
+                mod *= 2;
+            }
+            if (is_double){
+                mod *= 2;
+            }
+            // if (is_arrow){
+            //     mod *= 2;
+            // }
+            if (use_title){
+                mod *= 1.3;
+            }
+            if (target_rarity > 0){
+                mod *= 1 + target_rarity * 0.1;
+            }
+
+            var actionPower = mod * Math.max(1, diff);
+            ql = Math.min(100, ql + actionPower);
+            if (ql > highest_ql){
+                highest_ql = ql;
+            }
+            if (ql >= target_ql){
+                break;
+            }
+        }
+
+        return steps;
     }
 }
 

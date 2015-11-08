@@ -43,6 +43,7 @@ const App = React.createClass({
                         <option value="creation">Creation</option>
                         <option value="woodcutting_ql">Woodcutting (cutting down, resulting ql)</option>
                         <option value="imping">Imping (skillgain roll)</option>
+                        <option value="smithing_ql">Smithing (ql)</option>
                     </Input>
                 </Col>
 
