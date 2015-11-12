@@ -40,6 +40,13 @@ const FixedInputs = React.createClass({
                         value={this.state.bonus}
                     />
                 </Col>
+                <Col mdOffset={1} md={2}>
+                    <FloatInput
+                        label='Tool QL (0 if not applicable)'
+                        name='ql'
+                        value={this.state.ql}
+                    />
+                </Col>
             </Row>
             <Input
                 type="submit"

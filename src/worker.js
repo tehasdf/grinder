@@ -114,8 +114,11 @@ function _rareQuality(power, bonus, numbBonus, fiddle){
 }
 
 const calculator = {
-    fixed({skill, difficulty, bonus}){
-        return skillCheck({skill, difficulty, bonus});
+    fixed({skill, difficulty, bonus, ql}){
+        if (ql === 0){
+            ql = undefined;
+        }
+        return skillCheck({skill, difficulty, bonus, ql});
     },
 
     mining({skill, difficulty, pick_ql, pick_skill}){

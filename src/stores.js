@@ -48,7 +48,8 @@ export const paramsStore = Reflux.createStore({
             fixed: {
                 skill: 90,
                 bonus: 70,
-                difficulty: 60
+                difficulty: 60,
+                ql: 0
             },
             mining: {
                 skill: 90,
