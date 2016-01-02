@@ -23,7 +23,6 @@ function effectiveSkill(skill, bonus){
     return skill;
 }
 
-
 function effectiveWithItem(skill, ql, bonus){
     if (bonus > 70){
         bonus = 70;
@@ -45,6 +44,7 @@ function effectiveWithItem(skill, ql, bonus){
     }
     return bonusSkill;
 }
+const mobsTaming = {'Sheep': {'sstr': 10.0, 'cr': 1.0, 'sum': 11.0}, 'EpiphanyVynora': {'sstr': 80.0, 'cr': 96.0, 'sum': 176.0}, 'Horse': {'sstr': 22.0, 'cr': 6.0, 'sum': 28.0}, 'DragonGreen': {'sstr': 60.0, 'cr': 100.0, 'sum': 160.0}, 'DrakeSpirit': {'sstr': 80.0, 'cr': 27.0, 'sum': 107.0}, 'DeathCrawlerMinion': {'sstr': 30.0, 'cr': 14.0, 'sum': 44.0}, 'HellHound': {'sstr': 60.0, 'cr': 14.0, 'sum': 74.0}, 'SantaClaus': {'sstr': 99.0, 'cr': 99.0, 'sum': 198.0}, 'DrakeBlack': {'sstr': 55.0, 'cr': 98.0, 'sum': 153.0}, 'LionMountain': {'sstr': 25.0, 'cr': 3.0, 'sum': 28.0}, 'Guide': {'sstr': 99.0, 'cr': 99.0, 'sum': 198.0}, 'RatLarge': {'sstr': 15.0, 'cr': 2.0, 'sum': 17.0}, 'DrakeBlue': {'sstr': 60.0, 'cr': 95.0, 'sum': 155.0}, 'Tortoise': {'sstr': 30.0, 'cr': 12.0, 'sum': 42.0}, 'CaveBug': {'sstr': 40.0, 'cr': 5.0, 'sum': 45.0}, 'Bison': {'sstr': 10.0, 'cr': 4.0, 'sum': 14.0}, 'AvengerOfLight': {'sstr': 80.0, 'cr': 76.0, 'sum': 156.0}, 'ManifestationFo': {'sstr': 50.0, 'cr': 86.0, 'sum': 136.0}, 'GuardDecent': {'sstr': 15.0, 'cr': 99.0, 'sum': 114.0}, 'DemonSol': {'sstr': 50.0, 'cr': 14.0, 'sum': 64.0}, 'Pheasant': {'sstr': 10.0, 'cr': 1.0, 'sum': 11.0}, 'Skeleton': {'sstr': 10.0, 'cr': 8.0, 'sum': 18.0}, 'BearBrown': {'sstr': 30.0, 'cr': 9.0, 'sum': 39.0}, 'Ram': {'sstr': 20.0, 'cr': 5.0, 'sum': 25.0}, 'Pig': {'sstr': 10.0, 'cr': 2.0, 'sum': 12.0}, 'GuardAble': {'sstr': 19.0, 'cr': 99.0, 'sum': 118.0}, 'Wraith': {'sstr': 19.0, 'cr': 24.0, 'sum': 43.0}, 'LadyLake': {'sstr': 90.0, 'cr': 99.0, 'sum': 189.0}, 'Scorpion': {'sstr': 40.0, 'cr': 8.0, 'sum': 48.0}, 'Hen': {'sstr': 5.0, 'cr': 1.0, 'sum': 6.0}, 'GuardBrutal': {'sstr': 30.0, 'cr': 23.0, 'sum': 53.0}, 'Bull': {'sstr': 10.0, 'cr': 4.0, 'sum': 14.0}, 'Worg': {'sstr': 20.0, 'cr': 14.0, 'sum': 34.0}, 'GoblinLeader': {'sstr': 60.0, 'cr': 68.0, 'sum': 128.0}, 'ForestGiant': {'sstr': 60.0, 'cr': 76.0, 'sum': 136.0}, 'HellHorse': {'sstr': 72.0, 'cr': 9.0, 'sum': 81.0}, 'SonOfNogump': {'sstr': 30.0, 'cr': 6.0, 'sum': 36.0}, 'Octopus': {'sstr': 40.0, 'cr': 9.0, 'sum': 49.0}, 'Spider': {'sstr': 40.0, 'cr': 10.0, 'sum': 50.0}, 'Crocodile': {'sstr': 65.0, 'cr': 9.0, 'sum': 74.0}, 'Anadonda': {'sstr': 30.0, 'cr': 13.0, 'sum': 43.0}, 'LavaSpider': {'sstr': 40.0, 'cr': 13.0, 'sum': 53.0}, 'GuardSpiritGoodLenient': {'sstr': 15.0, 'cr': 6.0, 'sum': 21.0}, 'BoarFo': {'sstr': 34.0, 'cr': 14.0, 'sum': 48.0}, 'Salesman': {'sstr': 99.0, 'cr': 70.0, 'sum': 169.0}, 'Lamb': {'sstr': 5.0, 'cr': 1.0, 'sum': 6.0}, 'LavaCreature': {'sstr': 90.0, 'cr': 16.0, 'sum': 106.0}, 'GuardTough': {'sstr': 19.0, 'cr': 20.0, 'sum': 39.0}, 'GuideHots': {'sstr': 99.0, 'cr': 99.0, 'sum': 198.0}, 'CatWild': {'sstr': 20.0, 'cr': 2.0, 'sum': 22.0}, 'KingCobra': {'sstr': 99.0, 'cr': 87.0, 'sum': 186.0}, 'HellScorpion': {'sstr': 70.0, 'cr': 18.0, 'sum': 88.0}, 'EagleSpirit': {'sstr': 50.0, 'cr': 15.0, 'sum': 65.0}, 'Foal': {'sstr': 5.0, 'cr': 3.0, 'sum': 8.0}, 'SpawnUttacha': {'sstr': 4.0, 'cr': 12.0, 'sum': 16.0}, 'Zombie': {'sstr': 20.0, 'cr': 8.0, 'sum': 28.0}, 'BlueWhale': {'sstr': 40.0, 'cr': 18.0, 'sum': 58.0}, 'GuardSpiritAble': {'sstr': 19.0, 'cr': 8.0, 'sum': 27.0}, 'BlackWolf': {'sstr': 20.0, 'cr': 6.0, 'sum': 26.0}, 'Bartender': {'sstr': 99.0, 'cr': 79.0, 'sum': 178.0}, 'MagranonJuggernaut': {'sstr': 20.0, 'cr': 96.0, 'sum': 116.0}, 'SealCub': {'sstr': 10.0, 'cr': 1.0, 'sum': 11.0}, 'DragonWhite': {'sstr': 70.0, 'cr': 100.0, 'sum': 170.0}, 'DrakeGreen': {'sstr': 50.0, 'cr': 96.0, 'sum': 146.0}, 'Dolphin': {'sstr': 40.0, 'cr': 9.0, 'sum': 49.0}, 'Rooster': {'sstr': 10.0, 'cr': 1.0, 'sum': 11.0}, 'HyenaLabila': {'sstr': 40.0, 'cr': 14.0, 'sum': 54.0}, 'Troll': {'sstr': 39.0, 'cr': 12.0, 'sum': 51.0}, 'EvilSanta': {'sstr': 99.0, 'cr': 99.0, 'sum': 198.0}, 'IncarnationLibila': {'sstr': 40.0, 'cr': 86.0, 'sum': 126.0}, 'GuardSpiritEvilLenient': {'sstr': 15.0, 'cr': 6.0, 'sum': 21.0}, 'SharkHuge': {'sstr': 40.0, 'cr': 12.0, 'sum': 52.0}, 'BrownCow': {'sstr': 10.0, 'cr': 1.0, 'sum': 11.0}, 'Crab': {'sstr': 20.0, 'cr': 5.0, 'sum': 25.0}, 'DragonRed': {'sstr': 60.0, 'cr': 100.0, 'sum': 160.0}, 'DrakeRed': {'sstr': 40.0, 'cr': 95.0, 'sum': 135.0}, 'EasterBunny': {'sstr': 20.0, 'cr': 50.0, 'sum': 70.0}, 'Calf': {'sstr': 5.0, 'cr': 3.0, 'sum': 8.0}, 'BearBlack': {'sstr': 30.0, 'cr': 9.0, 'sum': 39.0}, 'TrollKing': {'sstr': 45.0, 'cr': 86.0, 'sum': 131.0}, 'DragonBlue': {'sstr': 60.0, 'cr': 100.0, 'sum': 160.0}, 'Unicorn': {'sstr': 60.0, 'cr': 11.0, 'sum': 71.0}, 'Goblin': {'sstr': 26.0, 'cr': 6.0, 'sum': 32.0}, 'Kid': {'sstr': 5.0, 'cr': 3.0, 'sum': 8.0}, 'Dog': {'sstr': 15.0, 'cr': 3.0, 'sum': 18.0}, 'DrakeWhite': {'sstr': 35.0, 'cr': 95.0, 'sum': 130.0}, 'SeaSerpent': {'sstr': 80.0, 'cr': 76.0, 'sum': 156.0}, 'Deer': {'sstr': 10.0, 'cr': 2.0, 'sum': 12.0}, 'Seal': {'sstr': 10.0, 'cr': 7.0, 'sum': 17.0}, 'GuardLenient': {'sstr': 15.0, 'cr': 99.0, 'sum': 114.0}, 'Cyclops': {'sstr': 55.0, 'cr': 86.0, 'sum': 141.0}, 'Chicken': {'sstr': 5.0, 'cr': 1.0, 'sum': 6.0}, 'DragonBlack': {'sstr': 70.0, 'cr': 100.0, 'sum': 170.0}, 'GorillaMagranon': {'sstr': 30.0, 'cr': 14.0, 'sum': 44.0}}
 
 function rollGaussian(skill, difficulty){
     var slide = ((Math.pow(skill, 3) - Math.pow(difficulty, 3)) / 50000) + (skill - difficulty);
@@ -196,10 +196,10 @@ const calculator = {
         if (tool_rarity > 0){
             itq = calcRareQuality(itq, tool_rarity);
         }
-        return Math.max(1.0, itq);
+        return itq;
     },
 
-    woodcutting_ql({skill, difficulty, hatchet_ql, hatchet_skill, imbue, hatchet_rarity}){
+    woodcutting_ql({skill, difficulty, hatchet_ql, hatchet_skill, imbue}){
         var hatchet_bonus = skillCheck({difficulty, skill: hatchet_skill, ql: hatchet_ql});
         var bonus = Math.max(0, hatchet_bonus);
 
@@ -297,6 +297,44 @@ const calculator = {
         }
 
         return steps;
+    },
+    taming({skill, soul, target, modifier, age, is_fo, is_hots, is_tamed}){
+        var targetData = mobsTaming[target];
+        if (!targetData){
+            throw new Error('unknown mob', target);
+        }
+
+        var targetSstr = targetData.sstr;
+        var targetCR = targetData.cr * modifier * age;
+        if (is_tamed){
+            targetCR = targetCR / 2;
+        }
+        if (is_hots){
+            targetCR = 20;
+        }
+
+        var bonus = Math.max(0, skillCheck({
+            skill: soul,
+            difficulty: targetSstr + 5,
+            bonus: -targetCR
+        }));
+
+
+        if (is_fo){
+            bonus += 20;
+        }
+        return skillCheck({
+            skill,
+            difficulty: targetSstr + targetCR,
+            bonus
+        });
+    },
+    fileting({skill, difficulty, knife_ql, knife_skill, knives_skill, cooking_skill}){
+        var knives_bonus = Math.max(0, skillCheck({skill: knives_skill, difficulty: 10}));
+        var bonus = skillCheck({skill: knife_skill, difficulty: 10, bonus: knives_bonus / 10});
+        bonus += Math.max(0, skillCheck({difficulty, skill: cooking_skill}) / 10);
+
+        return skillCheck({skill, difficulty, bonus, ql: knife_ql});
     }
 }
 

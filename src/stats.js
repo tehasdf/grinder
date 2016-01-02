@@ -19,8 +19,18 @@ const Stats = React.createClass({
     render(){
         return <div className="well"><dl className='dl-horizontal'>
             {
+                (this.state.stats && this.state.stats.max && this.state.stats.min)
+                ? <div><dt>Range</dt><dd>{this.state.stats.min} - {this.state.stats.max}</dd></div>
+                : null
+            }
+            {
                 (this.state.stats && this.state.stats.skillgain)
                 ? <div><dt>skillgain</dt>{formatFreqCount(this.state.stats.skillgain)}</div>
+                : null
+            }
+            {
+                (this.state.stats && this.state.stats.success)
+                ? <div><dt>0+</dt>{formatFreqCount(this.state.stats.success)}</div>
                 : null
             }
             {

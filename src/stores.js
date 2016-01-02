@@ -102,8 +102,7 @@ export const paramsStore = Reflux.createStore({
                 hatchet_ql: 90,
                 hatchet_skill: 80,
                 difficulty: 15,
-                imbue: 0,
-                hatchet_rarity: 0
+                imbue: 0
             },
             imping: {
                 skill: 90,
@@ -129,6 +128,24 @@ export const paramsStore = Reflux.createStore({
                 parent_skill: 85,
                 is_double: false,
                 use_title: false
+            },
+            taming: {
+                skill: 60,
+                soul: 40,
+                target: 'Pig',
+                modifier: 1,
+                age: 1.4,
+                is_fo: false,
+                is_hots: false,
+                is_tamed: false
+            },
+            fileting: {
+                difficulty: 20,
+                skill: 60,
+                knife_ql: 1,
+                knives_skill: 50,
+                knife_skill: 60,
+                cooking_skill: 30
             }
         };
 
@@ -199,7 +216,9 @@ function sumValues(data, [xFrom, xTo]){
     return {freq: totalFreq, count: totalCount}
 }
 
-
+function findMinMax(data){
+    return
+}
 export const graphDataStore = Reflux.createStore({
     init(){
         this.params = {};
@@ -248,9 +267,12 @@ export const statsStore = Reflux.createStore({
     _update(){
         this.trigger({
             skillgain: sumValues(this.data, [0, 40]),
+            success: sumValues(this.data, [0, 101]),
             selected: this.brush ? sumValues(this.data, [Math.round(this.brush[0]), Math.round(this.brush[1])]) : [],
             top: sumValues(this.data, [90, 101]),
-            mean: computeMean(this.data)
+            mean: computeMean(this.data),
+            min: Math.min.apply(null, this.data.map(obj => obj.power)),
+            max: Math.max.apply(null, this.data.map(obj => obj.power))
         });
     }
 });
