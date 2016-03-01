@@ -335,7 +335,11 @@ const calculator = {
         bonus += Math.max(0, skillCheck({difficulty, skill: cooking_skill}) / 10);
 
         return skillCheck({skill, difficulty, bonus, ql: knife_ql});
-    }
+    },
+    forestry({skill, sickle_skill, sickle_ql}){
+        let bonus = Math.max(1, skillCheck({difficulty: 1, skill: sickle_skill, ql: sickle_ql}));
+        return skillCheck({skill, bonus, ql: sickle_ql, difficulty: skill - 10});
+    },
 }
 
 

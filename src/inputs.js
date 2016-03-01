@@ -680,6 +680,51 @@ const FiletingInputs = React.createClass({
     }
 });
 
+
+const ForestryInputs = React.createClass({
+    mixins: [
+        Reflux.connect(paramsStore),
+        PureRenderMixin
+    ],
+
+    onSubmit(evt){
+        actions.recalc();
+        evt.preventDefault();
+    },
+
+    render(){
+        return <form onSubmit={this.onSubmit}>
+            <Row>
+                <Col md={2}>
+                    <SkillInput label="Forestry skill" skill={this.state.skill} />
+                </Col>
+                <Col md={2}>
+                    <FloatInput
+                        label='Sickle skill'
+                        name='sickle_skill'
+                        value={this.state.sickle_skill}
+                    />
+                </Col>
+                <Col md={2}>
+                    <FloatInput
+                        label='Sickle ql'
+                        name='sickle_ql'
+                        value={this.state.sickle_ql}
+                    />
+                </Col>
+            </Row>
+
+            <Input
+                type="submit"
+                label=" "
+                labelClassName='col-xs-2'
+                wrapperClassName='col-xs-2'
+            />
+        </form>
+    }
+});
+
+
 const TamingInputs = React.createClass({
     mixins: [
         Reflux.connect(paramsStore),
@@ -1038,6 +1083,8 @@ const SmithingQLInputs = React.createClass({
         </form>
     }
 });
+
+
 const Inputs = React.createClass({
     mixins: [PureRenderMixin],
     render(){
@@ -1053,7 +1100,8 @@ const Inputs = React.createClass({
             imping: <ImpingInputs />,
             smithing_ql: <SmithingQLInputs />,
             taming: <TamingInputs />,
-            fileting: <FiletingInputs />
+            fileting: <FiletingInputs />,
+            forestry: <ForestryInputs />
         }[this.props.kind];
         return input;
     }

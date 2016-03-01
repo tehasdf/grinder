@@ -1,3 +1,6 @@
+require('./index.html');
+
+
 const React = window.React;
 const ReactDOM = window.ReactDOM;
 const {Grid, Row, Col, Input, ProgressBar} = window.ReactBootstrap;
@@ -46,6 +49,7 @@ const App = React.createClass({
                         <option value="smithing_ql">Smithing (ql)</option>
                         <option value="taming">Taming</option>
                         <option value="fileting">Fileting</option>
+                        <option value="forestry">Forestry</option>
                     </Input>
                 </Col>
 

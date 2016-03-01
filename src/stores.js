@@ -146,6 +146,11 @@ export const paramsStore = Reflux.createStore({
                 knives_skill: 50,
                 knife_skill: 60,
                 cooking_skill: 30
+            },
+            forestry: {
+                skill: 65,
+                sickle_skill: 70,
+                sickle_ql: 55
             }
         };
 
