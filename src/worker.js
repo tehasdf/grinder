@@ -164,10 +164,10 @@ const calculator = {
         if (medi_tile){
             difficulty = 10;
             if (!medi_cooldown){
-                if (((path_level * 10 - skill) > 30) && skill <= 90) {
-                    difficulty = (1 + path_level * 3);
-                } else {
+                if ((path_level * 10 - skill < 30) || (skill > 90)) {
                     difficulty = (1 + path_level * 10);
+                } else {
+                    difficulty = (1 + path_level * 3);
                 }
             }
 
@@ -175,7 +175,6 @@ const calculator = {
         var nature_bonus = rollGaussian(nature_skill, difficulty) / 10;
         var bonus = Math.max(0, nature_bonus);
 
-        var effective_medi_skill = effectiveWithItem(skill, rug_ql, bonus);
         return skillCheck({skill, ql: rug_ql, bonus, difficulty});
     },
 
@@ -193,7 +192,7 @@ const calculator = {
         if (material_ql < itq){
             itq = Math.max(1.0, material_ql);
         }
-        if (tool_rarity > 0){
+        if (tool_rarity > 0 && power > 0){
             itq = calcRareQuality(itq, tool_rarity);
         }
         return itq;

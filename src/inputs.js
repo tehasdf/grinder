@@ -243,13 +243,18 @@ const FarmingInputs = React.createClass({
                         <option value="4">4 (Potato)</option>
                         <option value="7">7 (Cotton)</option>
                         <option value="10">10 (Wemp/rye)</option>
-                        <option value="15">15 (Oat/pumpkin)</option>
-                        <option value="20">20 (Reed/barley)</option>
+                        <option value="15">15 (Oat/pumpkin/cucumber)</option>
+                        <option value="20">20 (Reed/barley/carrots)</option>
                         <option value="30">30 (Wheat)</option>
+                        <option value="35">35 (Cabbage)</option>
                         <option value="40">40 (Corn)</option>
+                        <option value="45">45 (Tomatoes)</option>
+                        <option value="55">55 (Lettuce)</option>
                         <option value="60">60 (Onion/strawberries)</option>
+                        <option value="65">65 (Peas)</option>
                         <option value="70">70 (Garlic)</option>
                         <option value="80">80 (Rice)</option>
+                        <option value="85">85 (Sugar beet)</option>
                     </Input>
                 </Col>
             </Row>
@@ -474,10 +479,10 @@ const CreationInputs = React.createClass({
                         value={this.state.tool_rarity}
                         onChange={act_float('tool_rarity')}
                     >
-                        <option value="0">None</option>
-                        <option value="1">Rare</option>
-                        <option value="2">Supreme</option>
-                        <option value="3">Fantastic</option>
+                        <option value={0}>None</option>
+                        <option value={1}>Rare</option>
+                        <option value={2}>Supreme</option>
+                        <option value={3}>Fantastic</option>
                     </Input>
                 </Col>
             </Row>

@@ -77,7 +77,7 @@ export const paramsStore = Reflux.createStore({
                 skill: 90,
                 shovel_ql: 90,
                 digging_slope: 0,
-                difficulty: 60
+                difficulty: 0
             },
             meditation: {
                 skill: 90,
@@ -157,9 +157,7 @@ export const paramsStore = Reflux.createStore({
         this.kind = 'fixed';
 
         this.listenTo(actions.setParam, newParams => {
-            Object.keys(newParams).forEach(key => {
-                this.current[key] = newParams[key];
-            });
+            this.current = {...this.current, ...newParams};
             this.trigger(this.current);
         });
 
@@ -173,6 +171,10 @@ export const paramsStore = Reflux.createStore({
 
     get current(){
         return this.params[this.kind];
+    },
+
+    set current(val){
+        this.params[this.kind] = val;
     },
 
     getInitialState(){
@@ -195,13 +197,15 @@ export const countStore = Reflux.createStore({
 
 
 
-function computeMean(data){
+function computeMean(data, [xFrom, xTo]){
     var sumPower = 0;
     var sumCount = 0;
     data.forEach(({power, frequency, count}) => {
-        sumPower += power * count;
-        sumCount += count;
-    })
+        if (power >= xFrom && power <= xTo){
+            sumPower += power * count;
+            sumCount += count;
+        }
+    });
     return sumPower / sumCount;
 }
 
@@ -274,8 +278,9 @@ export const statsStore = Reflux.createStore({
             skillgain: sumValues(this.data, [0, 40]),
             success: sumValues(this.data, [0, 101]),
             selected: this.brush ? sumValues(this.data, [Math.round(this.brush[0]), Math.round(this.brush[1])]) : [],
+            meanSelected: this.brush ? computeMean(this.data, [Math.round(this.brush[0]), Math.round(this.brush[1])]) : [],
             top: sumValues(this.data, [90, 101]),
-            mean: computeMean(this.data),
+            mean: computeMean(this.data, [-100, 101]),
             min: Math.min.apply(null, this.data.map(obj => obj.power)),
             max: Math.max.apply(null, this.data.map(obj => obj.power))
         });

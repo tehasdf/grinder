@@ -9,6 +9,7 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.css$/, loader: "style!css" },
+            { test: /\.html/, loader: "html" },
             { test: /\.js$/, exclude: /node_modules/, loaders: ["babel?presets[]=es2015&presets[]=react&presets[]=stage-0"]}
         ]
     },

@@ -51,6 +51,11 @@ const Stats = React.createClass({
                 </div>
                 : null
             }
+            {
+                (this.state.brush && this.state.stats.meanSelected)
+                ? <div><dt>Mean of selected</dt><dd>{Math.round(100 * this.state.stats.meanSelected)/100}</dd></div>
+                : null
+            }
         </dl></div>
     }
 });

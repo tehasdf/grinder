@@ -39,5 +39,10 @@ with open('index.html', 'r') as infile, open(index_fname, 'w') as ofile:
 files = []
 scp_command = ['scp']
 scp_command.extend([os.path.join('dist', fname) for fname in os.listdir('dist')])
-scp_command.append('asdf@trewq:/var/www/html/wurm/grinder/')
+scp_command.append('asdf@trewq:/var/www/html/wurm/keenanisafag/')
 subprocess.check_call(scp_command)
+
+# scp_command = ['scp']
+# scp_command.extend([os.path.join('dist', fname) for fname in os.listdir('dist')])
+# scp_command.append('asdf@trewq:/var/www/html/wurm/grinder/')
+# subprocess.check_call(scp_command)
