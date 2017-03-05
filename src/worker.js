@@ -127,7 +127,7 @@ const calculator = {
         return power;
     },
 
-    mining_ql({skill, difficulty, pick_ql, pick_skill, pick_rarity, vein_ql, imbue}){
+    mining_ql({skill, difficulty, pick_ql, pick_skill, pick_rarity, vein_ql, imbue, rune}){
         var power = Math.max(1.0, calculator.mining({skill, difficulty, pick_ql, pick_skill}));
 
         var imbueEnhancement = 1.0 + 0.23047 * imbue / 100;
@@ -135,7 +135,7 @@ const calculator = {
             power = skill * imbueEnhancement;
         }
 
-        var max = Math.min(100, 20 + vein_ql * imbueEnhancement);
+        var max = Math.min(100, 20 + vein_ql * imbueEnhancement * (1 + rune) + pick_rarity);
         power = Math.min(power, max);
         var orePower = calcOreRareQuality(power, pick_rarity);
         return orePower;

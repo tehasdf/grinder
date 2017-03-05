@@ -171,7 +171,7 @@ const MiningQLInputs = React.createClass({
                         <option value="60">60 (Adamantine)</option>
                     </Input>
                 </Col>
-                <Col mdOffset={1} md={2}>
+                <Col md={2}>
                     <FloatInput
                         label='Vein ql modifier (0 - 79)'
                         name='vein_ql'
@@ -196,6 +196,18 @@ const MiningQLInputs = React.createClass({
                         <option value="1">Rare</option>
                         <option value="2">Supreme</option>
                         <option value="3">Fantastic</option>
+                    </Input>
+                </Col>
+                <Col mdOffset={1} md={2}>
+                    <Input
+                        label='Rune'
+                        type="select"
+                        value={this.state.rune}
+                        onChange={act_float('rune')}
+                    >
+                        <option value="0">None</option>
+                        <option value="0.05">5%</option>
+                        <option value="0.1">10%</option>
                     </Input>
                 </Col>
             </Row>

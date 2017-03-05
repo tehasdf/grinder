@@ -64,7 +64,8 @@ export const paramsStore = Reflux.createStore({
                 pick_rarity: 2,
                 pick_ql: 95,
                 vein_ql: 79,
-                imbue: 100
+                imbue: 100,
+                rune: 0
             },
             farming: {
                 skill: 90,
