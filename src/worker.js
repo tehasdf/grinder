@@ -135,9 +135,9 @@ const calculator = {
             power = skill * imbueEnhancement;
         }
 
-        var max = Math.min(100, 20 + vein_ql * imbueEnhancement * (1 + rune) + pick_rarity);
+        var max = Math.min(100, 20 + vein_ql * imbueEnhancement + pick_rarity);
         power = Math.min(power, max);
-        var orePower = calcOreRareQuality(power, pick_rarity);
+        var orePower = calcOreRareQuality(power * (1 + rune), pick_rarity);
         return orePower;
     },
 
