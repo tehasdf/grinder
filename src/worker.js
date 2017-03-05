@@ -342,7 +342,8 @@ const calculator = {
 }
 
 
-function getData({kind, count, params}){
+function getData({kind, count, params, rounding}){
+    var roundFunc = rounding == 'down' ? function(x){ return Math.floor(x); } : function(x){ return Math.round(x); };
     var rolls = {};
     var handler = calculator[kind];
     var step = Math.max(1000, count / 100);
@@ -353,7 +354,7 @@ function getData({kind, count, params}){
         if (i % step === 0){
             setProgress(i / count);
         }
-        power = Math.round(power);
+        power = roundFunc(power);
         if (rolls[power] === undefined){
             rolls[power] = 0;
         }

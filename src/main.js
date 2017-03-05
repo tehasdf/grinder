@@ -9,7 +9,7 @@ import PureRenderMixin  from 'react-addons-pure-render-mixin';
 import Graph from './graph';
 import actions from './actions';
 
-import {statsStore, kindStore, countStore, progressStore, paramsStore} from './stores';
+import {statsStore, kindStore, countStore, progressStore, paramsStore, roundingStore} from './stores';
 import {act_float, SkillInput, FloatInput} from './inputWidgets';
 import Stats from './stats';
 import Inputs from './inputs';
@@ -18,6 +18,7 @@ import Inputs from './inputs';
 const App = React.createClass({
         mixins: [
         Reflux.connect(countStore, 'count'),
+        Reflux.connect(roundingStore, 'rounding'),
         Reflux.connect(kindStore, 'kind'),
         Reflux.connect(progressStore, 'progress')
     ],
@@ -52,7 +53,7 @@ const App = React.createClass({
                     </Input>
                 </Col>
 
-                <Col md={4}>
+                <Col md={3}>
                     <Input
                         type='number'
                         label='Iteration count for the simulation'
@@ -60,6 +61,18 @@ const App = React.createClass({
                         value={this.state.count}
                         onChange={evt => actions.setCount(parseFloat(evt.target.value, 10))}
                     />
+                </Col>
+                <Col md={1}>
+                    <Input
+                        type='select'
+                        label='Rounding'
+                        ref="rounding"
+                        value={this.state.rounding}
+                        onChange={evt => actions.setRounding(evt.target.value)}
+                    >
+                        <option value="nearest">Nearest</option>
+                        <option value="down">Down</option>
+                    </Input>
                 </Col>
             </Row>
             <Row>

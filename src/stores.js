@@ -196,6 +196,17 @@ export const countStore = Reflux.createStore({
     }
 });
 
+export const roundingStore = Reflux.createStore({
+    init(){
+        this.listenTo(actions.setRounding, this.onSetRounding.bind(this));
+    },
+    onSetRounding(rounding){
+        this.trigger(rounding)
+    },
+    getInitialState(){
+        return "nearest";
+    }
+});
 
 
 function computeMean(data, [xFrom, xTo]){
@@ -233,12 +244,14 @@ export const graphDataStore = Reflux.createStore({
     init(){
         this.params = {};
         this.count = 10000;
+        this.rounding = 'nearest';
         this.kind = 'fixed';
 
         var setter = key => value => this[key] = value;
         var setParam = key => value => this.params[key] = value;
         this.listenTo(kindStore, setter('kind'), setter('kind'));
         this.listenTo(countStore, setter('count'), setter('count'));
+        this.listenTo(roundingStore, setter('rounding'), setter('rounding'));
 
         this.listenTo(paramsStore, setter('params'), setter('params'));
 
@@ -247,7 +260,7 @@ export const graphDataStore = Reflux.createStore({
     },
 
     recalc(){
-        worker.postMessage({count: this.count, kind: this.kind, params: this.params});
+        worker.postMessage({count: this.count, kind: this.kind, params: this.params, rounding: this.rounding});
     },
 
     _gotData(data){
