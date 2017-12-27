@@ -2,8 +2,7 @@ const React = window.React;
 import PureRenderMixin  from 'react-addons-pure-render-mixin';
 import Reflux from 'reflux';
 import {statsStore} from './stores';
-import {setBrush} from './actions';
-
+import actions from './actions';
 
 function formatFreqCount({freq, count}){
     return <dd>{Math.round(10000 * freq) / 100}% ({count})</dd>
@@ -12,7 +11,7 @@ function formatFreqCount({freq, count}){
 const Stats = React.createClass({
     mixins: [
         Reflux.connect(statsStore, 'stats'),
-        Reflux.connect(setBrush, 'brush'),
+        Reflux.connect(actions.setBrush, 'brush'),
         PureRenderMixin
     ],
 

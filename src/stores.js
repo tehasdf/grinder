@@ -209,11 +209,15 @@ export const roundingStore = Reflux.createStore({
 });
 
 
-function computeMean(data, [xFrom, xTo]){
+function computeMean(data, clamp){
+    var xFrom, xTo;
+    if (clamp){
+        [xFrom, xTo] = clamp;
+    }
     var sumPower = 0;
     var sumCount = 0;
     data.forEach(({power, frequency, count}) => {
-        if (power >= xFrom && power <= xTo){
+        if (!clamp || (power >= xFrom && power <= xTo)){
             sumPower += power * count;
             sumCount += count;
         }
@@ -294,7 +298,7 @@ export const statsStore = Reflux.createStore({
             selected: this.brush ? sumValues(this.data, [Math.round(this.brush[0]), Math.round(this.brush[1])]) : [],
             meanSelected: this.brush ? computeMean(this.data, [Math.round(this.brush[0]), Math.round(this.brush[1])]) : [],
             top: sumValues(this.data, [90, 101]),
-            mean: computeMean(this.data, [-100, 101]),
+            mean: computeMean(this.data),
             min: Math.min.apply(null, this.data.map(obj => obj.power)),
             max: Math.max.apply(null, this.data.map(obj => obj.power))
         });

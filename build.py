@@ -12,11 +12,11 @@ label = raw_input('Build label > ')
 
 main_fname = 'compiled.%s.js' % (label, )
 main_path = os.path.join('dist', main_fname)
-subprocess.check_call(['browserify', '-t', 'babelify', 'src/main.js', '-o', main_path])
+subprocess.check_call(['browserify', 'src/main.js', '-o', main_path])
 
 worker_fname = 'worker.%s.js' % (label, )
 worker_path = os.path.join('dist', worker_fname)
-subprocess.check_call(['browserify', '-t', 'babelify', 'src/worker.js', '-o', worker_path])
+subprocess.check_call(['browserify', 'src/worker.js', '-o', worker_path])
 
 with open(main_path, 'r') as f:
     data = f.read()

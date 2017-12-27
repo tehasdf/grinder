@@ -14,9 +14,8 @@ import {act_float, SkillInput, FloatInput} from './inputWidgets';
 import Stats from './stats';
 import Inputs from './inputs';
 
-
 const App = React.createClass({
-        mixins: [
+    mixins: [
         Reflux.connect(countStore, 'count'),
         Reflux.connect(roundingStore, 'rounding'),
         Reflux.connect(kindStore, 'kind'),

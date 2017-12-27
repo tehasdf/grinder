@@ -1,10 +1,9 @@
 const d3 = window.d3;
 const React = window.React;
-
 import Reflux from 'reflux';
 import PureRenderMixin  from 'react-addons-pure-render-mixin';
 import {graphDataStore} from './stores';
-import {setBrush} from './actions';
+import actions from './actions';
 
 
 function drawTheGraph(el, data){
@@ -44,7 +43,7 @@ function drawTheGraph(el, data){
     var brush = d3.svg.brush()
         .x(x)
         .on("brush", evt => {
-            setBrush(brush.extent())
+            actions.setBrush(brush.extent())
         });
 
     x.domain([-100, 105]);
